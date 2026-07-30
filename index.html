@@ -1,0 +1,3108 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Aggenda - Reservas y Citas de Todo Tipo</title>
+  <meta name="description" content="Aggenda es la plataforma integral para reservar citas médicas, restaurantes top, hospedajes exclusivos, eventos y proyectos inmobiliarios.">
+  
+  <!-- Google Fonts: Plus Jakarta Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <style>
+/* ==========================================================================
+   AGGENDA DESIGN SYSTEM & STYLESHEET (EMBEDDED FOR MOBILE COMPATIBILITY)
+   ========================================================================== */
+
+:root {
+  /* Color Palette - Light Mode */
+  --bg-primary: #f8fafc;
+  --bg-surface: #ffffff;
+  --bg-surface-hover: #f1f5f9;
+  --bg-card: #ffffff;
+  
+  --text-main: #0f172a;
+  --text-muted: #64748b;
+  --text-light: #94a3b8;
+  
+  --border-color: #e2e8f0;
+  --border-light: #f1f5f9;
+  
+  --accent-primary: #1e293b;
+  --accent-primary-hover: #0f172a;
+  
+  /* Category Colors */
+  --cat-med-bg: #e6f4f1;
+  --cat-med-color: #0d9488;
+  
+  --cat-rest-bg: #fef3c7;
+  --cat-rest-color: #d97706;
+  
+  --cat-hotel-bg: #e0e7ff;
+  --cat-hotel-color: #4f46e5;
+  
+  --cat-beauty-bg: #ffe4e6;
+  --cat-beauty-color: #e11d48;
+  
+  --cat-odonto-bg: #ecfccb;
+  --cat-odonto-color: #65a30d;
+  
+  --cat-event-bg: #fae8ff;
+  --cat-event-color: #c026d3;
+
+  --cat-real-bg: #d1fae5;
+  --cat-real-color: #059669;
+
+  /* Shadows & Glassmorphism */
+  --shadow-sm: 0 2px 8px rgba(15, 23, 42, 0.04);
+  --shadow-md: 0 4px 16px rgba(15, 23, 42, 0.08);
+  --shadow-lg: 0 12px 32px rgba(15, 23, 42, 0.12);
+  --shadow-float: 0 8px 24px rgba(0, 0, 0, 0.15);
+  
+  --glass-bg: rgba(255, 255, 255, 0.88);
+  --glass-border: rgba(255, 255, 255, 0.5);
+
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+  --radius-xl: 28px;
+  --radius-full: 9999px;
+
+  --font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  --header-height: 64px;
+  --nav-height: 68px;
+}
+
+[data-theme="dark"] {
+  --bg-primary: #0b0f17;
+  --bg-surface: #131b2a;
+  --bg-surface-hover: #1e293b;
+  --bg-card: #131b2a;
+
+  --text-main: #f8fafc;
+  --text-muted: #94a3b8;
+  --text-light: #64748b;
+
+  --border-color: #1e293b;
+  --border-light: #182234;
+
+  --accent-primary: #38bdf8;
+  --accent-primary-hover: #0284c7;
+
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.5);
+
+  --glass-bg: rgba(19, 27, 42, 0.88);
+  --glass-border: rgba(255, 255, 255, 0.08);
+}
+
+/* Base Resets */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  font-family: var(--font-family);
+  background-color: var(--bg-primary);
+  color: var(--text-main);
+  line-height: 1.5;
+  overflow-x: hidden;
+  display: flex;
+  justify-content: center;
+  min-height: 100vh;
+}
+
+/* App Container (Center constrained for desktop, 100% on mobile) */
+.app-container {
+  width: 100%;
+  max-width: 480px;
+  min-height: 100vh;
+  background-color: var(--bg-primary);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  box-shadow: 0 0 40px rgba(0, 0, 0, 0.1);
+  padding-bottom: calc(var(--nav-height) + 16px);
+  padding-top: var(--header-height);
+}
+
+@media (min-width: 900px) {
+  .app-container {
+    max-width: 960px;
+  }
+}
+
+/* ================= HEADER ================= */
+.app-header {
+  position: fixed;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 480px;
+  height: var(--header-height);
+  background: var(--glass-bg);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border-color);
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+  transition: max-width 0.3s ease;
+}
+
+@media (min-width: 900px) {
+  .app-header {
+    max-width: 960px;
+  }
+}
+
+.header-content {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.logo-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.logo-icon {
+  width: 38px;
+  height: 38px;
+  background: #0f172a;
+  color: #ffffff;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--shadow-sm);
+}
+
+[data-theme="dark"] .logo-icon {
+  background: #ffffff;
+  color: #0f172a;
+}
+
+.logo-text {
+  font-weight: 800;
+  font-size: 20px;
+  letter-spacing: -0.5px;
+  color: var(--text-main);
+}
+
+.header-search-bar {
+  flex: 1;
+  max-width: 280px;
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.header-search-bar input {
+  width: 100%;
+  height: 38px;
+  padding: 0 12px 0 34px;
+  border-radius: var(--radius-full);
+  border: 1px solid var(--border-color);
+  background-color: var(--bg-surface);
+  color: var(--text-main);
+  font-size: 13px;
+  font-family: inherit;
+  outline: none;
+  transition: all 0.2s ease;
+}
+
+.header-search-bar input:focus {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+}
+
+.header-search-bar .search-icon {
+  position: absolute;
+  left: 10px;
+  color: var(--text-muted);
+  pointer-events: none;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.icon-btn {
+  width: 38px;
+  height: 38px;
+  border-radius: var(--radius-full);
+  border: 1px solid var(--border-color);
+  background-color: var(--bg-surface);
+  color: var(--text-main);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.2s ease;
+}
+
+.icon-btn:hover {
+  background-color: var(--bg-surface-hover);
+  transform: translateY(-1px);
+}
+
+.notification-badge {
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  background-color: #ef4444;
+  color: #ffffff;
+  font-size: 10px;
+  font-weight: 700;
+  height: 16px;
+  min-width: 16px;
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid var(--bg-surface);
+}
+
+/* Theme switch icons */
+.sun-icon { display: block; }
+.moon-icon { display: none; }
+[data-theme="dark"] .sun-icon { display: none; }
+[data-theme="dark"] .moon-icon { display: block; }
+
+/* ================= MAIN CONTENT VIEWS ================= */
+.main-content {
+  flex: 1;
+  padding: 12px 16px 24px 16px;
+}
+
+.app-view {
+  display: none;
+  animation: fadeIn 0.25s ease-in-out forwards;
+}
+
+.app-view.active {
+  display: block;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* View Header */
+.view-header {
+  margin-bottom: 20px;
+}
+
+.view-header h1 {
+  font-size: 24px;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+}
+
+.view-subtitle {
+  font-size: 13.5px;
+  color: var(--text-muted);
+  margin-top: 4px;
+}
+
+.title-with-badge {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.fav-count-tag {
+  background: #f1f5f9;
+  color: #475569;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: var(--radius-full);
+}
+
+[data-theme="dark"] .fav-count-tag {
+  background: #1e293b;
+  color: #94a3b8;
+}
+
+/* ================= HERO CAROUSEL (6 SLIDES) ================= */
+.hero-carousel-container {
+  position: relative;
+  width: 100%;
+  height: 360px;
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  box-shadow: var(--shadow-md);
+  margin-bottom: 24px;
+  background-color: #000;
+}
+
+.carousel-track {
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+.hero-slide {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 20px;
+  color: #ffffff;
+}
+
+.hero-slide.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+.slide-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(180deg, rgba(0,0,0,0.35) 0%, rgba(0,0,0,0.1) 40%, rgba(0,0,0,0.85) 100%);
+  z-index: 1;
+}
+
+.slide-top-bar {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.slide-badge {
+  background: rgba(255, 255, 255, 0.25);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: #ffffff;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 6px 14px;
+  border-radius: var(--radius-full);
+  letter-spacing: 0.3px;
+  text-transform: uppercase;
+}
+
+.slide-content {
+  position: relative;
+  z-index: 2;
+  margin-bottom: 24px;
+}
+
+.slide-title {
+  font-size: 24px;
+  font-weight: 800;
+  line-height: 1.15;
+  margin-bottom: 8px;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.4);
+}
+
+.slide-summary {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.92);
+  line-height: 1.4;
+  margin-bottom: 14px;
+  max-width: 92%;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.slide-btn {
+  background: #ffffff;
+  color: #0f172a;
+  border: none;
+  font-size: 13.5px;
+  font-weight: 700;
+  padding: 10px 22px;
+  border-radius: var(--radius-full);
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+  transition: all 0.2s ease;
+}
+
+.slide-btn:hover {
+  transform: scale(1.03);
+  background: #f8fafc;
+}
+
+.carousel-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-full);
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #ffffff;
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 3;
+  transition: all 0.2s ease;
+}
+
+.carousel-arrow:hover {
+  background: rgba(0, 0, 0, 0.6);
+}
+
+.prev-arrow { left: 10px; }
+.next-arrow { right: 10px; }
+
+.carousel-indicators {
+  position: absolute;
+  bottom: 14px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 6px;
+  z-index: 3;
+}
+
+.indicator-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: var(--radius-full);
+  background: rgba(255, 255, 255, 0.4);
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.indicator-dot.active {
+  width: 24px;
+  background: #ffffff;
+}
+
+/* ================= SECTIONS & REPEATING GROUPS ================= */
+.section-container {
+  margin-bottom: 26px;
+}
+
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+
+.section-header h2 {
+  font-size: 18px;
+  font-weight: 800;
+  letter-spacing: -0.3px;
+}
+
+.see-all-btn {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  font-size: 13px;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.see-all-btn:hover {
+  color: var(--text-main);
+  text-decoration: underline;
+}
+
+/* CATEGORIES SCROLL GROUP */
+.categories-scroll-group {
+  display: flex;
+  gap: 12px;
+  overflow-x: auto;
+  padding-bottom: 6px;
+  scrollbar-width: none;
+}
+
+.categories-scroll-group::-webkit-scrollbar {
+  display: none;
+}
+
+.category-chip {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  padding: 10px 16px;
+  border-radius: var(--radius-lg);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  user-select: none;
+}
+
+.category-chip:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-sm);
+}
+
+.category-chip.active {
+  border-color: #0f172a;
+  background-color: var(--bg-surface-hover);
+}
+
+.cat-icon-box {
+  width: 38px;
+  height: 38px;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+}
+
+.cat-icon-box.med { background-color: var(--cat-med-bg); color: var(--cat-med-color); }
+.cat-icon-box.rest { background-color: var(--cat-rest-bg); color: var(--cat-rest-color); }
+.cat-icon-box.hotel { background-color: var(--cat-hotel-bg); color: var(--cat-hotel-color); }
+.cat-icon-box.beauty { background-color: var(--cat-beauty-bg); color: var(--cat-beauty-color); }
+.cat-icon-box.odonto { background-color: var(--cat-odonto-bg); color: var(--cat-odonto-color); }
+.cat-icon-box.event { background-color: var(--cat-event-bg); color: var(--cat-event-color); }
+.cat-icon-box.real { background-color: var(--cat-real-bg); color: var(--cat-real-color); }
+
+.category-name {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+/* CARDS REPEATING GROUPS (HORIZONTAL SCROLL) */
+.cards-repeating-group {
+  display: flex;
+  gap: 14px;
+  overflow-x: auto;
+  padding-bottom: 10px;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+}
+
+.cards-repeating-group::-webkit-scrollbar {
+  display: none;
+}
+
+.service-card {
+  flex: 0 0 250px;
+  scroll-snap-align: start;
+  background-color: var(--bg-surface);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-color);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  cursor: pointer;
+  transition: all 0.25s ease;
+  display: flex;
+  flex-direction: column;
+}
+
+.service-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-md);
+}
+
+.card-image-box {
+  width: 100%;
+  height: 150px;
+  position: relative;
+  overflow: hidden;
+  background-color: #cbd5e1;
+}
+
+.card-image-box img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.4s ease;
+}
+
+.service-card:hover .card-image-box img {
+  transform: scale(1.05);
+}
+
+.card-fav-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-full);
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(4px);
+  border: none;
+  color: #64748b;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.card-fav-btn.active {
+  color: #ef4444;
+  background: #ffffff;
+}
+
+.card-tag {
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+  background: rgba(15, 23, 42, 0.8);
+  backdrop-filter: blur(4px);
+  color: #ffffff;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: var(--radius-full);
+}
+
+.card-content {
+  padding: 14px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.card-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text-main);
+  line-height: 1.3;
+  margin-bottom: 4px;
+}
+
+.card-location {
+  font-size: 12.5px;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-bottom: 10px;
+}
+
+.card-footer-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: auto;
+  padding-top: 8px;
+  border-top: 1px solid var(--border-light);
+}
+
+.card-rating {
+  font-size: 12px;
+  font-weight: 700;
+  color: #f59e0b;
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}
+
+.card-price {
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--text-main);
+}
+
+/* ================= MIS CITAS Y RESERVAS ================= */
+.filter-pills-bar {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding-bottom: 12px;
+  margin-bottom: 14px;
+  scrollbar-width: none;
+}
+
+.filter-pills-bar::-webkit-scrollbar {
+  display: none;
+}
+
+.pill-btn {
+  flex: 0 0 auto;
+  padding: 8px 16px;
+  border-radius: var(--radius-full);
+  border: 1px solid var(--border-color);
+  background-color: var(--bg-surface);
+  color: var(--text-muted);
+  font-size: 13px;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.pill-btn.active {
+  background-color: var(--accent-primary);
+  color: #ffffff;
+  border-color: var(--accent-primary);
+}
+
+.color-legend-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  padding: 10px 14px;
+  border-radius: var(--radius-md);
+  margin-bottom: 20px;
+}
+
+.legend-item {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.color-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: var(--radius-full);
+}
+
+.color-dot.med { background-color: var(--cat-med-color); }
+.color-dot.rest { background-color: var(--cat-rest-color); }
+.color-dot.hotel { background-color: var(--cat-hotel-color); }
+.color-dot.event { background-color: var(--cat-event-color); }
+.color-dot.beauty { background-color: var(--cat-beauty-color); }
+.color-dot.real { background-color: var(--cat-real-color); }
+
+.reservations-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.reservation-card {
+  background-color: var(--bg-surface);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-color);
+  padding: 16px;
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Color Coding Border Left */
+.reservation-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 6px;
+}
+
+.reservation-card.cat-medico::before { background-color: var(--cat-med-color); }
+.reservation-card.cat-restaurante::before { background-color: var(--cat-rest-color); }
+.reservation-card.cat-hospedaje::before { background-color: var(--cat-hotel-color); }
+.reservation-card.cat-evento::before { background-color: var(--cat-event-color); }
+.reservation-card.cat-belleza::before { background-color: var(--cat-beauty-color); }
+.reservation-card.cat-inmobiliaria::before { background-color: var(--cat-real-color); }
+
+.res-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding-left: 6px;
+}
+
+.res-category-badge {
+  font-size: 11.5px;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: var(--radius-full);
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.cat-medico .res-category-badge { background: var(--cat-med-bg); color: var(--cat-med-color); }
+.cat-restaurante .res-category-badge { background: var(--cat-rest-bg); color: var(--cat-rest-color); }
+.cat-hospedaje .res-category-badge { background: var(--cat-hotel-bg); color: var(--cat-hotel-color); }
+.cat-evento .res-category-badge { background: var(--cat-event-bg); color: var(--cat-event-color); }
+.cat-belleza .res-category-badge { background: var(--cat-beauty-bg); color: var(--cat-beauty-color); }
+.cat-inmobiliaria .res-category-badge { background: var(--cat-real-bg); color: var(--cat-real-color); }
+
+.res-status-tag {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: var(--radius-sm);
+  text-transform: uppercase;
+}
+
+.res-status-tag.confirmada { background: #dcfce7; color: #166534; }
+.res-status-tag.pendiente { background: #fef3c7; color: #92400e; }
+.res-status-tag.completada { background: #e2e8f0; color: #475569; }
+.res-status-tag.cancelada { background: #fee2e2; color: #991b1b; }
+
+.res-body {
+  display: flex;
+  gap: 14px;
+  padding-left: 6px;
+}
+
+.res-thumb {
+  width: 64px;
+  height: 64px;
+  border-radius: var(--radius-md);
+  object-fit: cover;
+}
+
+.res-details {
+  flex: 1;
+}
+
+.res-title {
+  font-size: 16px;
+  font-weight: 800;
+  margin-bottom: 4px;
+}
+
+.res-datetime {
+  font-size: 13px;
+  font-weight: 700;
+  color: #2563eb;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 4px;
+}
+
+.res-location {
+  font-size: 12.5px;
+  color: var(--text-muted);
+}
+
+.res-actions {
+  display: flex;
+  gap: 8px;
+  padding-top: 10px;
+  border-top: 1px solid var(--border-light);
+  padding-left: 6px;
+}
+
+.res-action-btn {
+  flex: 1;
+  padding: 8px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-color);
+  background: var(--bg-surface-hover);
+  color: var(--text-main);
+  font-size: 12.5px;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  transition: background 0.2s;
+}
+
+.res-action-btn.primary {
+  background: var(--accent-primary);
+  color: #ffffff;
+  border: none;
+}
+
+/* ================= CHATS SECTION ================= */
+.chats-layout {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+  min-height: 500px;
+}
+
+.chat-list-panel {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.panel-header {
+  padding: 14px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.panel-header h2 {
+  font-size: 16px;
+  font-weight: 800;
+  margin-bottom: 10px;
+}
+
+.chat-search input {
+  width: 100%;
+  padding: 8px 12px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-color);
+  background: var(--bg-primary);
+  color: var(--text-main);
+  font-size: 13px;
+  outline: none;
+}
+
+.conversations-scroll {
+  flex: 1;
+  max-height: 380px;
+  overflow-y: auto;
+}
+
+.conversation-item {
+  padding: 12px 14px;
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  border-bottom: 1px solid var(--border-light);
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.conversation-item.active {
+  background-color: var(--bg-surface-hover);
+}
+
+.avatar-wrapper {
+  position: relative;
+}
+
+.avatar-img {
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-full);
+  object-fit: cover;
+}
+
+.service-type-dot {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 12px;
+  height: 12px;
+  border-radius: var(--radius-full);
+  border: 2px solid var(--bg-surface);
+}
+
+.conv-info {
+  flex: 1;
+  overflow: hidden;
+}
+
+.conv-top-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 4px;
+}
+
+.conv-name {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+.conv-time {
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.conv-msg {
+  font-size: 12.5px;
+  color: var(--text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.conv-badge {
+  background: #3b82f6;
+  color: #ffffff;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: var(--radius-full);
+}
+
+.chat-detail-panel {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.active-chat-header {
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border-color);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.service-context-banner {
+  background: var(--bg-primary);
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--border-color);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 12.5px;
+}
+
+.chat-messages-body {
+  height: 280px;
+  padding: 16px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.chat-bubble {
+  max-width: 82%;
+  padding: 10px 14px;
+  border-radius: 16px;
+  font-size: 13.5px;
+  line-height: 1.4;
+  position: relative;
+}
+
+.chat-bubble.provider {
+  align-self: flex-start;
+  background: var(--bg-primary);
+  border-bottom-left-radius: 4px;
+  color: var(--text-main);
+  border: 1px solid var(--border-color);
+}
+
+.chat-bubble.user {
+  align-self: flex-end;
+  background: var(--accent-primary);
+  color: #ffffff;
+  border-bottom-right-radius: 4px;
+}
+
+.bubble-time {
+  font-size: 10px;
+  opacity: 0.7;
+  margin-top: 4px;
+  text-align: right;
+}
+
+.quick-replies-bar {
+  display: flex;
+  gap: 8px;
+  padding: 8px 16px;
+  overflow-x: auto;
+  border-top: 1px solid var(--border-light);
+}
+
+.quick-chip {
+  flex: 0 0 auto;
+  font-size: 11.5px;
+  padding: 6px 12px;
+  border-radius: var(--radius-full);
+  border: 1px solid var(--border-color);
+  background: var(--bg-primary);
+  color: var(--text-muted);
+  cursor: pointer;
+}
+
+.chat-input-footer {
+  padding: 12px 16px;
+  border-top: 1px solid var(--border-color);
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.chat-input-footer input {
+  flex: 1;
+  height: 40px;
+  padding: 0 14px;
+  border-radius: var(--radius-full);
+  border: 1px solid var(--border-color);
+  background: var(--bg-primary);
+  color: var(--text-main);
+  outline: none;
+  font-size: 13.5px;
+  font-family: inherit;
+}
+
+.attach-btn, .send-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-full);
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.attach-btn {
+  background: var(--bg-primary);
+  color: var(--text-muted);
+  border: 1px solid var(--border-color);
+}
+
+.send-btn {
+  background: #2563eb;
+  color: #ffffff;
+}
+
+/* ================= FAVORITOS ================= */
+.favorites-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+}
+
+@media (min-width: 600px) {
+  .favorites-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.fav-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+}
+
+/* ================= PERFIL SECTION ================= */
+.profile-card-hero {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-xl);
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 20px;
+  box-shadow: var(--shadow-sm);
+}
+
+.profile-avatar-wrapper {
+  position: relative;
+}
+
+.profile-avatar-img {
+  width: 70px;
+  height: 70px;
+  border-radius: var(--radius-full);
+  object-fit: cover;
+  border: 3px solid var(--bg-surface);
+  box-shadow: var(--shadow-md);
+}
+
+.edit-avatar-btn {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 26px;
+  height: 26px;
+  border-radius: var(--radius-full);
+  background: #0f172a;
+  color: #ffffff;
+  border: 2px solid var(--bg-surface);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.profile-name {
+  font-size: 18px;
+  font-weight: 800;
+}
+
+.profile-email {
+  font-size: 13px;
+  color: var(--text-muted);
+  margin-bottom: 6px;
+}
+
+.vip-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+  color: #ffffff;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: var(--radius-full);
+}
+
+.profile-stats-bar {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: 16px;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.stat-box {
+  text-align: center;
+}
+
+.stat-value {
+  display: block;
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--text-main);
+}
+
+.stat-label {
+  font-size: 11.5px;
+  color: var(--text-muted);
+}
+
+.stat-divider {
+  width: 1px;
+  height: 28px;
+  background: var(--border-color);
+}
+
+.profile-menu-container {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.menu-section-title {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  letter-spacing: 0.5px;
+  margin: 12px 0 4px 4px;
+}
+
+.profile-menu-item {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 14px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.profile-menu-item:hover {
+  background: var(--bg-surface-hover);
+  transform: translateX(2px);
+}
+
+.menu-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.menu-icon.teal { background: #e6f4f1; color: #0d9488; }
+.menu-icon.gold { background: #fef3c7; color: #d97706; }
+.menu-icon.purple { background: #e0e7ff; color: #4f46e5; }
+.menu-icon.dark { background: #f1f5f9; color: #334155; }
+.menu-icon.coral { background: #ffe4e6; color: #e11d48; }
+.menu-icon.blue { background: #dbeafe; color: #2563eb; }
+.menu-icon.gray { background: #f1f5f9; color: #64748b; }
+
+[data-theme="dark"] .menu-icon.dark { background: #1e293b; color: #f8fafc; }
+
+.menu-label {
+  flex: 1;
+}
+
+.menu-title {
+  display: block;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.menu-sub {
+  display: block;
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.arrow-right {
+  color: var(--text-muted);
+}
+
+/* Switch Toggle UI */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 44px;
+  height: 24px;
+}
+
+.switch input { opacity: 0; width: 0; height: 0; }
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-color: #cbd5e1;
+  transition: .3s;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 18px;
+  width: 18px;
+  left: 3px;
+  bottom: 3px;
+  background-color: white;
+  transition: .3s;
+}
+
+input:checked + .slider { background-color: #2563eb; }
+input:checked + .slider:before { transform: translateX(20px); }
+.slider.round { border-radius: 34px; }
+.slider.round:before { border-radius: 50%; }
+
+.logout-btn-wrapper {
+  margin-top: 16px;
+  margin-bottom: 24px;
+}
+
+.logout-btn {
+  width: 100%;
+  padding: 14px;
+  border-radius: var(--radius-lg);
+  border: 1px solid #fee2e2;
+  background: #fff5f5;
+  color: #dc2626;
+  font-size: 14px;
+  font-weight: 700;
+  font-family: inherit;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  cursor: pointer;
+}
+
+/* ================= BOTTOM NAVIGATION BAR ================= */
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 480px;
+  height: var(--nav-height);
+  background: var(--glass-bg);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-top: 1px solid var(--border-color);
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  padding: 0 4px;
+}
+
+@media (min-width: 900px) {
+  .bottom-nav {
+    max-width: 960px;
+  }
+}
+
+.nav-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 6px 0;
+  font-family: inherit;
+  user-select: none;
+}
+
+.nav-item.active {
+  color: var(--text-main);
+  font-weight: 700;
+}
+
+.nav-item.active .nav-icon-container {
+  transform: translateY(-2px);
+  color: #0f172a;
+}
+
+[data-theme="dark"] .nav-item.active .nav-icon-container {
+  color: #ffffff;
+}
+
+.nav-icon-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.nav-badge {
+  position: absolute;
+  top: -4px;
+  right: -6px;
+  background-color: #2563eb;
+  color: #ffffff;
+  font-size: 10px;
+  font-weight: 800;
+  height: 15px;
+  min-width: 15px;
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.nav-badge.alt {
+  background-color: #10b981;
+}
+
+.nav-label {
+  font-size: 11px;
+  letter-spacing: -0.2px;
+}
+
+/* ================= DETAIL MODAL ================= */
+.modal-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(6px);
+  z-index: 200;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+}
+
+@media (min-width: 600px) {
+  .modal-overlay {
+    align-items: center;
+    padding: 20px;
+  }
+}
+
+.modal-overlay.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+.modal-card {
+  width: 100%;
+  max-width: 480px;
+  max-height: 90vh;
+  background: var(--bg-surface);
+  border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+  overflow-y: auto;
+  position: relative;
+  transform: translateY(100%);
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@media (min-width: 600px) {
+  .modal-card {
+    border-radius: var(--radius-xl);
+  }
+}
+
+.modal-overlay.active .modal-card {
+  transform: translateY(0);
+}
+
+.modal-close-btn {
+  position: absolute;
+  top: 14px; right: 14px;
+  width: 34px; height: 34px;
+  border-radius: var(--radius-full);
+  background: rgba(0, 0, 0, 0.5);
+  color: #ffffff;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 10;
+}
+
+.modal-hero-img-box {
+  width: 100%;
+  height: 220px;
+  position: relative;
+}
+
+.modal-hero-img-box img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+}
+
+.modal-category-badge {
+  position: absolute;
+  bottom: 12px; left: 16px;
+  background: rgba(15, 23, 42, 0.8);
+  color: #ffffff;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 4px 12px;
+  border-radius: var(--radius-full);
+}
+
+.modal-fav-btn {
+  position: absolute;
+  top: 14px; left: 14px;
+  width: 34px; height: 34px;
+  border-radius: var(--radius-full);
+  background: rgba(255, 255, 255, 0.85);
+  color: #64748b;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 10;
+}
+
+.modal-fav-btn.active { color: #ef4444; }
+
+.modal-body {
+  padding: 20px;
+}
+
+.modal-rating-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.rating-stars { color: #f59e0b; }
+.modal-price { color: var(--text-main); }
+
+.modal-title {
+  font-size: 22px;
+  font-weight: 800;
+  line-height: 1.2;
+}
+
+.modal-subtitle {
+  font-size: 13.5px;
+  color: var(--text-muted);
+  margin-bottom: 14px;
+}
+
+.modal-description {
+  font-size: 13.5px;
+  line-height: 1.5;
+  color: var(--text-main);
+  margin-bottom: 20px;
+}
+
+.modal-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.btn-primary, .btn-secondary {
+  flex: 1;
+  padding: 12px;
+  border-radius: var(--radius-lg);
+  font-size: 14px;
+  font-weight: 700;
+  font-family: inherit;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.btn-primary {
+  background: #2563eb;
+  color: #ffffff;
+  border: none;
+}
+
+.btn-secondary {
+  background: var(--bg-primary);
+  color: var(--text-main);
+  border: 1px solid var(--border-color);
+}
+
+/* Toast System */
+.toast-container {
+  position: fixed;
+  bottom: 80px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 300;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  pointer-events: none;
+}
+
+.toast {
+  background: #0f172a;
+  color: #ffffff;
+  padding: 10px 20px;
+  border-radius: var(--radius-full);
+  font-size: 13px;
+  font-weight: 600;
+  box-shadow: var(--shadow-float);
+  animation: toastIn 0.3s ease forwards;
+}
+
+@keyframes toastIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+  </style>
+</head>
+<body>
+
+  <div class="app-container">
+    
+    <!-- TOP HEADER -->
+    <header class="app-header" id="appHeader">
+      <div class="header-content">
+        <div class="logo-group" onclick="switchTab('inicio')">
+          <div class="logo-icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="4" width="18" height="18" rx="4" ry="4"></rect>
+              <line x1="16" y1="2" x2="16" y2="6"></line>
+              <line x1="8" y1="2" x2="8" y2="6"></line>
+              <line x1="3" y1="10" x2="21" y2="10"></line>
+              <text x="7.5" y="19" font-size="8" font-weight="bold" fill="currentColor" stroke="none">31</text>
+            </svg>
+          </div>
+          <span class="logo-text">Aggenda</span>
+        </div>
+
+        <div class="header-search-bar" id="headerSearchBar">
+          <svg class="search-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          </svg>
+          <input type="text" id="globalSearchInput" placeholder="Buscar médicos, restaurantes, hoteles..." oninput="handleGlobalSearch(this.value)">
+        </div>
+
+        <div class="header-actions">
+          <button class="icon-btn theme-toggle-btn" id="themeToggleBtn" onclick="toggleTheme()" title="Cambiar tema">
+            <svg class="sun-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="5"></circle>
+              <line x1="12" y1="1" x2="12" y2="3"></line>
+              <line x1="12" y1="21" x2="12" y2="23"></line>
+              <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+              <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+              <line x1="1" y1="12" x2="3" y2="12"></line>
+              <line x1="21" y1="12" x2="23" y2="12"></line>
+              <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+              <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+            </svg>
+            <svg class="moon-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+            </svg>
+          </button>
+
+          <button class="icon-btn notification-btn" id="notificationBtn" onclick="showNotificationToast()" title="Notificaciones">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+              <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+            </svg>
+            <span class="notification-badge">3</span>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- MAIN VIEWS WRAPPER -->
+    <main class="main-content">
+
+      <!-- ================= PANTALLA 1: INICIO ================= -->
+      <section id="view-inicio" class="app-view active">
+        
+        <!-- HERO PROMOTIONAL CAROUSEL (6 SLIDES) -->
+        <div class="hero-carousel-container" id="heroCarousel">
+          <div class="carousel-track" id="carouselTrack">
+            <!-- Dynamic slides rendered via JS -->
+          </div>
+
+          <!-- Carousel Navigation Controls -->
+          <button class="carousel-arrow prev-arrow" onclick="moveSlide(-1)" aria-label="Anterior">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+          </button>
+          <button class="carousel-arrow next-arrow" onclick="moveSlide(1)" aria-label="Siguiente">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+          </button>
+
+          <div class="carousel-indicators" id="carouselIndicators">
+            <!-- Indicator dots rendered via JS -->
+          </div>
+        </div>
+
+        <!-- CATEGORIES REPEATING GROUP -->
+        <div class="section-container">
+          <div class="section-header">
+            <h2>Categorías</h2>
+            <button class="see-all-btn" onclick="filterCategory('all')">Ver todas</button>
+          </div>
+          <div class="categories-scroll-group" id="categoriesGroup">
+            <!-- Categories rendered via JS -->
+          </div>
+        </div>
+
+        <!-- REPEATING GROUP 1: RESTAURANTES TOP DEL MUNDO -->
+        <div class="section-container">
+          <div class="section-header">
+            <h2>Restaurantes Top del Mundo</h2>
+            <button class="see-all-btn" onclick="filterCategory('restaurantes')">Ver todos</button>
+          </div>
+          <div class="cards-repeating-group" id="restaurantsGroup">
+            <!-- Cards rendered via JS -->
+          </div>
+        </div>
+
+        <!-- REPEATING GROUP 2: HOSPEDAJES TOP DEL MUNDO -->
+        <div class="section-container">
+          <div class="section-header">
+            <h2>Hospedajes Top del Mundo</h2>
+            <button class="see-all-btn" onclick="filterCategory('hospedajes')">Ver todos</button>
+          </div>
+          <div class="cards-repeating-group" id="hotelsGroup">
+            <!-- Cards rendered via JS -->
+          </div>
+        </div>
+
+        <!-- REPEATING GROUP 3: EVENTOS IMPERDIBLES -->
+        <div class="section-container">
+          <div class="section-header">
+            <h2>Eventos Imperdibles</h2>
+            <button class="see-all-btn" onclick="filterCategory('eventos')">Ver todos</button>
+          </div>
+          <div class="cards-repeating-group" id="eventsGroup">
+            <!-- Cards rendered via JS -->
+          </div>
+        </div>
+
+        <!-- REPEATING GROUP 4: PROYECTOS INMOBILIARIOS SIN IGUAL -->
+        <div class="section-container">
+          <div class="section-header">
+            <h2>Proyectos Inmobiliarios sin Igual</h2>
+            <button class="see-all-btn" onclick="filterCategory('inmobiliaria')">Ver todos</button>
+          </div>
+          <div class="cards-repeating-group" id="realEstateGroup">
+            <!-- Cards rendered via JS -->
+          </div>
+        </div>
+
+      </section>
+
+      <!-- ================= PANTALLA 2: MIS CITAS Y RESERVAS ================= -->
+      <section id="view-reservas" class="app-view">
+        <div class="view-header">
+          <h1>Mis Citas y Reservas</h1>
+          <p class="view-subtitle">Organizadas de la más próxima a la menos próxima con código de colores por categoría</p>
+        </div>
+
+        <!-- Status Filter Tabs -->
+        <div class="filter-pills-bar">
+          <button class="pill-btn active" onclick="filterReservationsStatus('all', this)">Todas (6)</button>
+          <button class="pill-btn" onclick="filterReservationsStatus('proxima', this)">Próximas (5)</button>
+          <button class="pill-btn" onclick="filterReservationsStatus('completada', this)">Completadas (1)</button>
+          <button class="pill-btn" onclick="filterReservationsStatus('cancelada', this)">Canceladas (0)</button>
+        </div>
+
+        <!-- Category Color Legend -->
+        <div class="color-legend-bar">
+          <span class="legend-item"><span class="color-dot med"></span> Médico / Odonto</span>
+          <span class="legend-item"><span class="color-dot rest"></span> Restaurante</span>
+          <span class="legend-item"><span class="color-dot hotel"></span> Hospedaje</span>
+          <span class="legend-item"><span class="color-dot event"></span> Evento</span>
+          <span class="legend-item"><span class="color-dot beauty"></span> Belleza</span>
+          <span class="legend-item"><span class="color-dot real"></span> Inmobiliaria</span>
+        </div>
+
+        <!-- Reservations Cards List -->
+        <div class="reservations-list" id="reservationsList">
+          <!-- Rendered dynamically sorted by date via JS -->
+        </div>
+      </section>
+
+      <!-- ================= PANTALLA 3: CHATS ================= -->
+      <section id="view-chats" class="app-view">
+        <div class="chats-layout">
+          
+          <!-- Conversations Sidebar List -->
+          <div class="chat-list-panel" id="chatListPanel">
+            <div class="panel-header">
+              <h2>Mensajes & Concierge</h2>
+              <div class="chat-search">
+                <input type="text" placeholder="Buscar prestador o servicio..." oninput="filterChatList(this.value)">
+              </div>
+            </div>
+            <div class="conversations-scroll" id="conversationsContainer">
+              <!-- Rendered via JS -->
+            </div>
+          </div>
+
+          <!-- Active Conversation Main Window -->
+          <div class="chat-detail-panel" id="chatDetailPanel">
+            <div class="active-chat-header" id="activeChatHeader">
+              <!-- Rendered via JS -->
+            </div>
+
+            <div class="service-context-banner" id="serviceContextBanner">
+              <!-- Context info rendered via JS -->
+            </div>
+
+            <div class="chat-messages-body" id="chatMessagesBody">
+              <!-- Chat bubbles rendered via JS -->
+            </div>
+
+            <div class="quick-replies-bar" id="quickRepliesBar">
+              <button class="quick-chip" onclick="sendQuickReply('¿Cuáles son los requisitos de llegada?')">📋 Requisitos de llegada</button>
+              <button class="quick-chip" onclick="sendQuickReply('¿Puedo modificar la hora de mi reserva?')">⏰ Modificar hora</button>
+              <button class="quick-chip" onclick="sendQuickReply('Solicitar ubicación exacta y parqueadero')">📍 Ubicación / Parqueadero</button>
+            </div>
+
+            <div class="chat-input-footer">
+              <button class="attach-btn" onclick="simulateAttachment()" title="Adjuntar documento">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"></path></svg>
+              </button>
+              <input type="text" id="chatTextInput" placeholder="Escribe un mensaje al prestador..." onkeydown="handleChatKeyDown(event)">
+              <button class="send-btn" onclick="sendChatMessage()">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+              </button>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- ================= PANTALLA 4: FAVORITOS ================= -->
+      <section id="view-favoritos" class="app-view">
+        <div class="view-header">
+          <div class="title-with-badge">
+            <h1>Mis Favoritos</h1>
+            <span class="fav-count-tag" id="favCountTag">6 guardados</span>
+          </div>
+          <p class="view-subtitle">Guarda tus lugares y servicios predilectos clasificados por categoría</p>
+        </div>
+
+        <div class="filter-pills-bar" id="favCategoryFilter">
+          <button class="pill-btn active" onclick="filterFavCategory('all', this)">Todos</button>
+          <button class="pill-btn" onclick="filterFavCategory('restaurantes', this)">Restaurantes</button>
+          <button class="pill-btn" onclick="filterFavCategory('hospedajes', this)">Hospedajes</button>
+          <button class="pill-btn" onclick="filterFavCategory('medicos', this)">Médicos</button>
+          <button class="pill-btn" onclick="filterFavCategory('eventos', this)">Eventos</button>
+          <button class="pill-btn" onclick="filterFavCategory('inmobiliaria', this)">Inmobiliaria</button>
+          <button class="pill-btn" onclick="filterFavCategory('belleza', this)">Belleza</button>
+        </div>
+
+        <div class="favorites-grid" id="favoritesGrid">
+          <!-- Rendered via JS -->
+        </div>
+      </section>
+
+      <!-- ================= PANTALLA 5: PERFIL ================= -->
+      <section id="view-perfil" class="app-view">
+        <div class="profile-card-hero">
+          <div class="profile-avatar-wrapper">
+            <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=300&q=80" alt="Mauricio Morales" class="profile-avatar-img">
+            <button class="edit-avatar-btn" title="Cambiar foto">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
+            </button>
+          </div>
+
+          <div class="profile-info">
+            <h2 class="profile-name">Mauricio Morales</h2>
+            <p class="profile-email">mauricio.morales@aggenda.com</p>
+            <span class="vip-badge">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path></svg>
+              Socio VIP Gold Aggenda
+            </span>
+          </div>
+        </div>
+
+        <div class="profile-stats-bar">
+          <div class="stat-box">
+            <span class="stat-value">14</span>
+            <span class="stat-label">Citas Completadas</span>
+          </div>
+          <div class="stat-divider"></div>
+          <div class="stat-box">
+            <span class="stat-value">3</span>
+            <span class="stat-label">Reservas Activas</span>
+          </div>
+          <div class="stat-divider"></div>
+          <div class="stat-box">
+            <span class="stat-value">2,450</span>
+            <span class="stat-label">Puntos Aggenda</span>
+          </div>
+        </div>
+
+        <div class="profile-menu-container">
+          <div class="menu-section-title">Ajustes de Cuenta</div>
+          
+          <div class="profile-menu-item" onclick="showProfileToast('Datos Personales')">
+            <div class="menu-icon teal">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+            </div>
+            <div class="menu-label">
+              <span class="menu-title">Datos Personales</span>
+              <span class="menu-sub">Nombre, correo, teléfono y verificación</span>
+            </div>
+            <svg class="arrow-right" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"></polyline></svg>
+          </div>
+
+          <div class="profile-menu-item" onclick="showProfileToast('Métodos de Pago')">
+            <div class="menu-icon gold">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg>
+            </div>
+            <div class="menu-label">
+              <span class="menu-title">Métodos de Pago & Tarjetas</span>
+              <span class="menu-sub">Visa **** 4892 (Predeterminada)</span>
+            </div>
+            <svg class="arrow-right" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"></polyline></svg>
+          </div>
+
+          <div class="profile-menu-item" onclick="showProfileToast('Direcciones Guardadas')">
+            <div class="menu-icon purple">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+            </div>
+            <div class="menu-label">
+              <span class="menu-title">Mis Direcciones Guardadas</span>
+              <span class="menu-sub">Casa, Oficina y Ubicaciones VIP</span>
+            </div>
+            <svg class="arrow-right" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"></polyline></svg>
+          </div>
+
+          <div class="menu-section-title">Preferencias & Aplicación</div>
+
+          <div class="profile-menu-item">
+            <div class="menu-icon dark">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+            </div>
+            <div class="menu-label">
+              <span class="menu-title">Modo Oscuro</span>
+              <span class="menu-sub">Cambiar apariencia del tema</span>
+            </div>
+            <label class="switch">
+              <input type="checkbox" id="themeSwitch" onchange="toggleTheme()">
+              <span class="slider round"></span>
+            </label>
+          </div>
+
+          <div class="profile-menu-item" onclick="showProfileToast('Notificaciones')">
+            <div class="menu-icon coral">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+            </div>
+            <div class="menu-label">
+              <span class="menu-title">Notificaciones & Recordatorios</span>
+              <span class="menu-sub">Push, Email y SMS antes de cada cita</span>
+            </div>
+            <svg class="arrow-right" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"></polyline></svg>
+          </div>
+
+          <div class="profile-menu-item" onclick="showProfileToast('Centro de Ayuda')">
+            <div class="menu-icon blue">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+            </div>
+            <div class="menu-label">
+              <span class="menu-title">Centro de Ayuda & Soporte 24/7</span>
+              <span class="menu-sub">Preguntas frecuentes y atención en vivo</span>
+            </div>
+            <svg class="arrow-right" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"></polyline></svg>
+          </div>
+
+          <div class="profile-menu-item" onclick="showProfileToast('Términos y Privacidad')">
+            <div class="menu-icon gray">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+            </div>
+            <div class="menu-label">
+              <span class="menu-title">Términos, Condiciones & Privacidad</span>
+              <span class="menu-sub">Políticas de uso y protección de datos</span>
+            </div>
+            <svg class="arrow-right" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"></polyline></svg>
+          </div>
+
+          <div class="logout-btn-wrapper">
+            <button class="logout-btn" onclick="showProfileToast('Sesión cerrada correctamente')">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+              Cerrar Sesión en Aggenda
+            </button>
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- BOTTOM NAVIGATION BAR (5 SECTIONS) -->
+    <nav class="bottom-nav" id="bottomNav">
+      
+      <button class="nav-item active" data-tab="inicio" onclick="switchTab('inicio')">
+        <div class="nav-icon-container">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+            <polyline points="9 22 9 12 15 12 15 22"></polyline>
+          </svg>
+        </div>
+        <span class="nav-label">Inicio</span>
+      </button>
+
+      <button class="nav-item" data-tab="reservas" onclick="switchTab('reservas')">
+        <div class="nav-icon-container">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+            <polyline points="14 2 14 8 20 8"></polyline>
+            <line x1="16" y1="13" x2="8" y2="13"></line>
+            <line x1="16" y1="17" x2="8" y2="17"></line>
+            <polyline points="10 9 9 9 8 9"></polyline>
+          </svg>
+          <span class="nav-badge">3</span>
+        </div>
+        <span class="nav-label">Mis citas y reservas</span>
+      </button>
+
+      <button class="nav-item" data-tab="chats" onclick="switchTab('chats')">
+        <div class="nav-icon-container">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+          </svg>
+          <span class="nav-badge alt">2</span>
+        </div>
+        <span class="nav-label">Chats</span>
+      </button>
+
+      <button class="nav-item" data-tab="favoritos" onclick="switchTab('favoritos')">
+        <div class="nav-icon-container">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+          </svg>
+        </div>
+        <span class="nav-label">Favoritos</span>
+      </button>
+
+      <button class="nav-item" data-tab="perfil" onclick="switchTab('perfil')">
+        <div class="nav-icon-container">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+            <circle cx="12" cy="7" r="4"></circle>
+          </svg>
+        </div>
+        <span class="nav-label">Perfil</span>
+      </button>
+
+    </nav>
+
+  </div>
+
+  <!-- SERVICE DETAIL MODAL -->
+  <div class="modal-overlay" id="detailModal">
+    <div class="modal-card">
+      <button class="modal-close-btn" onclick="closeModal()">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+      </button>
+
+      <div class="modal-hero-img-box">
+        <img id="modalImg" src="" alt="Detalle del servicio">
+        <span class="modal-category-badge" id="modalCategoryBadge">Categoría</span>
+        <button class="modal-fav-btn" id="modalFavBtn" onclick="toggleModalFav()">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <div class="modal-rating-row">
+          <span class="rating-stars" id="modalRating">★ 4.9 (128 reseñas)</span>
+          <span class="modal-price" id="modalPrice">$$$</span>
+        </div>
+
+        <h2 class="modal-title" id="modalTitle">Título del Servicio</h2>
+        <p class="modal-subtitle" id="modalSubtitle">Ubicación / Especificación</p>
+
+        <p class="modal-description" id="modalDescription">
+          Descripción detallada del servicio, horarios disponibles, amenidades y detalles de reserva en la plataforma Aggenda.
+        </p>
+
+        <div class="modal-actions">
+          <button class="btn-secondary" onclick="openChatFromModal()">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+            Contactar Prestador
+          </button>
+          <button class="btn-primary" onclick="simulateBookingProcess()">
+            Reservar Cita / Entrada
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOAST NOTIFICATION CONTAINER -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <script>
+/* ==========================================================================
+   AGGENDA WEBAPP - EMBEDDED JAVASCRIPT APPLICATION LOGIC
+   ========================================================================== */
+
+const HERO_SLIDES = [
+  {
+    id: 'slide-1',
+    category: 'Médicos & Salud',
+    title: 'Consultas Médicas VIP & Especialistas',
+    summary: 'Agenda citas presenciales y telemedicina instantánea con los mejores profesionales en salud y clínicas del país.',
+    image: 'https://images.unsplash.com/photo-1622253692010-333f2da6031d?auto=format&fit=crop&w=1200&q=80',
+    dateBadge: 'Disponibilidad Hoy',
+    type: 'medicos'
+  },
+  {
+    id: 'slide-2',
+    category: 'Gastronomía & Gourmet',
+    title: 'Experiencias Gastronómicas 5 Estrellas',
+    summary: 'Reserva tu mesa exclusiva en los restaurantes galardonados del mundo sin filas ni esperas.',
+    image: 'https://images.unsplash.com/photo-1550966871-3ed3cdb5ed0c?auto=format&fit=crop&w=1200&q=80',
+    dateBadge: 'Mesas VIP',
+    type: 'restaurantes'
+  },
+  {
+    id: 'slide-3',
+    category: 'Hospedajes de Lujo',
+    title: 'Escapadas de Lujo & Resorts Boutique',
+    summary: 'Suites de ensueño, villas privadas y hospedajes exóticos con atención personalizada 24/7.',
+    image: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=1200&q=80',
+    dateBadge: 'Oferta Especial',
+    type: 'hospedajes'
+  },
+  {
+    id: 'slide-4',
+    category: 'Evento Próximo',
+    title: 'Usyk vs. Dubois II – World Championship',
+    summary: 'Todos los cinturones en juego. La revancha de los pesos pesados en vivo desde el estadio de Wembley.',
+    image: 'https://images.unsplash.com/photo-1517649763962-0c623266010b?auto=format&fit=crop&w=1200&q=80',
+    dateBadge: 'Sáb 19 - Jul. en 11:30',
+    type: 'eventos'
+  },
+  {
+    id: 'slide-5',
+    category: 'Proyecto Inmobiliario',
+    title: 'Lanzamiento: Reserve Pent-houses',
+    summary: 'Invierte en preventa exclusiva de apartamentos de ultra lujo con arquitectura sostenible e inteligente.',
+    image: 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=1200&q=80',
+    dateBadge: 'Preventa VIP',
+    type: 'inmobiliaria'
+  },
+  {
+    id: 'slide-6',
+    category: 'Belleza & Wellness',
+    title: 'Spa & Salón de Belleza Elite',
+    summary: 'Tratamientos estéticos de alta gama, rituales de spa relajantes y estilistas expertos a tu alcance.',
+    image: 'https://images.unsplash.com/photo-1560066984-138dadb4c035?auto=format&fit=crop&w=1200&q=80',
+    dateBadge: 'Descuento 20%',
+    type: 'belleza'
+  }
+];
+
+const CATEGORIES = [
+  { id: 'medicos', name: 'Médicos', icon: '🩺', colorClass: 'med' },
+  { id: 'restaurantes', name: 'Restaurantes', icon: '🍽️', colorClass: 'rest' },
+  { id: 'hospedajes', name: 'Hospedajes', icon: '🛏️', colorClass: 'hotel' },
+  { id: 'belleza', name: 'Belleza', icon: '💇‍♀️', colorClass: 'beauty' },
+  { id: 'odontologos', name: 'Odontólogos', icon: '🦷', colorClass: 'odonto' },
+  { id: 'eventos', name: 'Eventos', icon: '🎟️', colorClass: 'event' },
+  { id: 'inmobiliaria', name: 'Inmobiliaria', icon: '🏙️', colorClass: 'real' }
+];
+
+const TOP_RESTAURANTS = [
+  {
+    id: 'rest-1',
+    title: 'Disfrutar',
+    location: 'Barcelona - España',
+    rating: '4.9 ★ (340)',
+    price: '$$$$',
+    category: 'restaurantes',
+    image: 'https://images.unsplash.com/photo-1559339352-11d035aa65de?auto=format&fit=crop&w=600&q=80',
+    description: 'Reconocido como el Mejor Restaurante del Mundo. Menú degustación vanguardista en un ambiente mediterráneo refinado.'
+  },
+  {
+    id: 'rest-2',
+    title: 'Central Restaurante',
+    location: 'Lima - Perú',
+    rating: '4.9 ★ (512)',
+    price: '$$$$',
+    category: 'restaurantes',
+    image: 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=600&q=80',
+    description: 'Una experiencia gastronómica a través de las diferentes altitudes de los Andes y la Amazonía peruana.'
+  },
+  {
+    id: 'rest-3',
+    title: 'Asador Etxebarri',
+    location: 'Atxondo - España',
+    rating: '4.8 ★ (290)',
+    price: '$$$',
+    category: 'restaurantes',
+    image: 'https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=600&q=80',
+    description: 'La cuna del asado de alta cocina mundial con leña de árboles autóctonos seleccionados.'
+  },
+  {
+    id: 'rest-4',
+    title: 'Alchemist',
+    location: 'Copenhague - Dinamarca',
+    rating: '5.0 ★ (180)',
+    price: '$$$$$',
+    category: 'restaurantes',
+    image: 'https://images.unsplash.com/photo-1550966871-3ed3cdb5ed0c?auto=format&fit=crop&w=600&q=80',
+    description: 'Cocina holística inmersiva que combina artes escénicas, diseño sensorial y alta gastronomía.'
+  }
+];
+
+const TOP_HOTELS = [
+  {
+    id: 'hotel-1',
+    title: 'Ellerman House',
+    location: 'Cape Town - Sudáfrica',
+    rating: '4.95 ★ (210)',
+    price: '$850 / noche',
+    category: 'hospedajes',
+    image: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=600&q=80',
+    description: 'Boutique hotel icónico en Bantry Bay con vistas panorámicas al Océano Atlántico, cava privada y galería de arte.'
+  },
+  {
+    id: 'hotel-2',
+    title: 'Singita Boulders Lodge',
+    location: 'Hazyview - Sudáfrica',
+    rating: '5.0 ★ (145)',
+    price: '$1,400 / noche',
+    category: 'hospedajes',
+    image: 'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=600&q=80',
+    description: 'Safari lodge ultra exclusivo integrado en la reserva salvaje a orillas del río Sand.'
+  },
+  {
+    id: 'hotel-3',
+    title: 'Aman Tokyo',
+    location: 'Tokio - Japón',
+    rating: '4.9 ★ (380)',
+    price: '$1,100 / noche',
+    category: 'hospedajes',
+    image: 'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?auto=format&fit=crop&w=600&q=80',
+    description: 'Santuario zen urbano en las alturas de la torre Otemachi con vistas espectaculares al Monte Fuji.'
+  },
+  {
+    id: 'hotel-4',
+    title: 'Villa d\'Este',
+    location: 'Lago de Como - Italia',
+    rating: '4.9 ★ (420)',
+    price: '$1,250 / noche',
+    category: 'hospedajes',
+    image: 'https://images.unsplash.com/photo-1571896349842-33c89424de2d?auto=format&fit=crop&w=600&q=80',
+    description: 'Palacio renacentista del siglo XVI rodeado de 25 hectáreas de jardines flotantes en el Lago Como.'
+  }
+];
+
+const UNMISSABLE_EVENTS = [
+  {
+    id: 'event-1',
+    title: 'Usyk vs Dubois II Championship',
+    location: 'Estadio de Wembley - Londres',
+    rating: '5.0 ★ (1.2k)',
+    price: 'Desde $180',
+    category: 'eventos',
+    image: 'https://images.unsplash.com/photo-1517649763962-0c623266010b?auto=format&fit=crop&w=600&q=80',
+    description: 'La pelea del siglo por la unificación indiscutida de los títulos de peso pesado mundial.'
+  },
+  {
+    id: 'event-2',
+    title: 'Cirque du Soleil: KÀ Show',
+    location: 'MGM Grand - Las Vegas',
+    rating: '4.9 ★ (890)',
+    price: 'Desde $110',
+    category: 'eventos',
+    image: 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?auto=format&fit=crop&w=600&q=80',
+    description: 'Una producción acrobática monumental con escenario móvil 360 grados y tecnología de proyección de vanguardia.'
+  },
+  {
+    id: 'event-3',
+    title: 'Coldplay: Music of the Spheres Tour',
+    location: 'Estadio Olímpico',
+    rating: '5.0 ★ (3.4k)',
+    price: 'Desde $140',
+    category: 'eventos',
+    image: 'https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?auto=format&fit=crop&w=600&q=80',
+    description: 'La experiencia en vivo más colorida y sostenible del planeta con pulseras LED interactiva.'
+  }
+];
+
+const REAL_ESTATE_PROJECTS = [
+  {
+    id: 'real-1',
+    title: 'The Reserve Pent-houses',
+    location: 'Distrito Financiero VIP',
+    rating: '4.95 ★ (85)',
+    price: 'Desde $450,000 USD',
+    category: 'inmobiliaria',
+    image: 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=600&q=80',
+    description: 'Torres residenciales inteligentes con helipuerto, domótica total y acabados en mármol italiano.'
+  },
+  {
+    id: 'real-2',
+    title: 'Ocean Sky Towers & Marina',
+    location: 'Cartagena de Indias',
+    rating: '4.9 ★ (62)',
+    price: 'Desde $320,000 USD',
+    category: 'inmobiliaria',
+    image: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=600&q=80',
+    description: 'Apartamentos con marina privada, muelle para yates y terraza con piscina sin fin sobre el mar Caribe.'
+  },
+  {
+    id: 'real-3',
+    title: 'Horizon Eco Luxury Villas',
+    location: 'Valle del Bravo',
+    rating: '5.0 ★ (40)',
+    price: 'Desde $680,000 USD',
+    category: 'inmobiliaria',
+    image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=600&q=80',
+    description: 'Residencias campestres en medio del bosque con paneles solares, huertos orgánicos y spa privado.'
+  }
+];
+
+let RESERVATIONS = [
+  {
+    id: 'res-101',
+    title: 'Cita Médica Cardiología Especializada',
+    provider: 'Dr. Carlos Mendoza',
+    category: 'medicos',
+    categoryLabel: 'Médico',
+    categoryClass: 'cat-medico',
+    date: '2026-08-02',
+    time: '09:30 AM',
+    displayDate: 'Sáb 2 de Agosto - 09:30 AM',
+    location: 'Clínica Santa Sofía - Cons. 402',
+    status: 'confirmada',
+    statusLabel: 'Confirmada',
+    image: 'https://images.unsplash.com/photo-1622253692010-333f2da6031d?auto=format&fit=crop&w=200&q=80',
+    code: 'MED-9482'
+  },
+  {
+    id: 'res-102',
+    title: 'Valoración Estética & Limpieza Ultrasonido',
+    provider: 'Dra. Andrea Ruiz',
+    category: 'odontologos',
+    categoryLabel: 'Odontología',
+    categoryClass: 'cat-medico',
+    date: '2026-08-05',
+    time: '02:00 PM',
+    displayDate: 'Mié 5 de Agosto - 02:00 PM',
+    location: 'Estética Dental Premier - Sede Norte',
+    status: 'confirmada',
+    statusLabel: 'Confirmada',
+    image: 'https://images.unsplash.com/photo-1588776814546-1ffcf47267a5?auto=format&fit=crop&w=200&q=80',
+    code: 'ODO-3109'
+  },
+  {
+    id: 'res-103',
+    title: 'Reserva de Mesa Tasting Menu (Mesa 4 VIP)',
+    provider: 'Restaurante Disfrutar',
+    category: 'restaurantes',
+    categoryLabel: 'Restaurante',
+    categoryClass: 'cat-restaurante',
+    date: '2026-08-14',
+    time: '08:30 PM',
+    displayDate: 'Vie 14 de Agosto - 08:30 PM',
+    location: 'Carrer de Villarroel, 163, Barcelona',
+    status: 'confirmada',
+    statusLabel: 'Confirmada',
+    image: 'https://images.unsplash.com/photo-1559339352-11d035aa65de?auto=format&fit=crop&w=200&q=80',
+    code: 'RES-8821'
+  },
+  {
+    id: 'res-104',
+    title: 'Visita Guiada Showroom & Pent-house Modelo',
+    provider: 'The Reserve Pent-houses',
+    category: 'inmobiliaria',
+    categoryLabel: 'Inmobiliaria',
+    categoryClass: 'cat-inmobiliaria',
+    date: '2026-08-20',
+    time: '03:00 PM',
+    displayDate: 'Jue 20 de Agosto - 03:00 PM',
+    location: 'Av. Las Palmas #45-10',
+    status: 'pendiente',
+    statusLabel: 'En Proceso',
+    image: 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=200&q=80',
+    code: 'INM-0042'
+  },
+  {
+    id: 'res-105',
+    title: 'Hospedaje 3 Noches Ocean Suite',
+    provider: 'Ellerman House Cape Town',
+    category: 'hospedajes',
+    categoryLabel: 'Hospedaje',
+    categoryClass: 'cat-hospedaje',
+    date: '2026-09-10',
+    time: '12:00 PM',
+    displayDate: 'Jue 10 de Septiembre - Check-in 12:00 PM',
+    location: '180 Kloof Rd, Bantry Bay, Cape Town',
+    status: 'confirmada',
+    statusLabel: 'Confirmada',
+    image: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=200&q=80',
+    code: 'HOS-7714'
+  },
+  {
+    id: 'res-106',
+    title: 'Entradas Zona Ringside VIP Usyk vs Dubois',
+    provider: 'Wembley Stadium Events',
+    category: 'eventos',
+    categoryLabel: 'Evento',
+    categoryClass: 'cat-evento',
+    date: '2026-09-25',
+    time: '07:00 PM',
+    displayDate: 'Vie 25 de Septiembre - 07:00 PM',
+    location: 'Wembley, London HA9 0WS, Reino Unido',
+    status: 'completada',
+    statusLabel: 'Completada',
+    image: 'https://images.unsplash.com/photo-1517649763962-0c623266010b?auto=format&fit=crop&w=200&q=80',
+    code: 'EVE-1109'
+  }
+];
+
+let FAVORITES_IDS = new Set(['rest-1', 'hotel-1', 'event-1', 'real-1', 'rest-2', 'hotel-3']);
+
+let CONVERSATIONS = [
+  {
+    id: 'chat-1',
+    name: 'Dr. Carlos Mendoza',
+    role: 'Médico Cardiólogo',
+    avatar: 'https://images.unsplash.com/photo-1622253692010-333f2da6031d?auto=format&fit=crop&w=200&q=80',
+    categoryTag: 'Médico',
+    categoryClass: 'med',
+    unreadCount: 1,
+    time: '10:45 AM',
+    serviceTitle: 'Cita Médica - Sáb 2 Ago 09:30 AM',
+    messages: [
+      { sender: 'provider', text: 'Hola Mauricio, confirmamos tu cita cardiaca para el Sábado 2 de Agosto a las 9:30 AM en la Clínica Santa Sofía.', time: '10:40 AM' },
+      { sender: 'user', text: 'Excelente Dr., ¿debo asistir en ayunas para los exámenes preliminares?', time: '10:42 AM' },
+      { sender: 'provider', text: 'Sí, por favor asistir con 8 horas de ayuno para el perfil lipídico completo.', time: '10:45 AM' }
+    ]
+  },
+  {
+    id: 'chat-2',
+    name: 'Concierge Ellerman House',
+    role: 'Atención VIP Hospedaje',
+    avatar: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=200&q=80',
+    categoryTag: 'Hospedaje',
+    categoryClass: 'hotel',
+    unreadCount: 1,
+    time: 'Ayer',
+    serviceTitle: 'Reserva Ocean Suite - 10 Septiembre',
+    messages: [
+      { sender: 'provider', text: 'Estimado Mauricio, su Ocean Suite en Cape Town está lista. ¿Desea coordinar transporte privado desde el aeropuerto de Ciudad del Cabo?', time: 'Ayer' }
+    ]
+  },
+  {
+    id: 'chat-3',
+    name: 'Maître Disfrutar Barcelona',
+    role: 'Reserva Gastronómica',
+    avatar: 'https://images.unsplash.com/photo-1559339352-11d035aa65de?auto=format&fit=crop&w=200&q=80',
+    categoryTag: 'Restaurante',
+    categoryClass: 'rest',
+    unreadCount: 0,
+    time: '24 Jul',
+    serviceTitle: 'Mesa Tasting Menu - 14 Agosto',
+    messages: [
+      { sender: 'user', text: 'Hola, quisiéramos solicitar una copa de bienvenida de champagne para la celebración de aniversario.', time: '24 Jul' },
+      { sender: 'provider', text: 'Con todo gusto Sr. Morales, lo tenemos anotado en sus notas especiales de mesa.', time: '24 Jul' }
+    ]
+  }
+];
+
+let activeTab = 'inicio';
+let currentSlideIndex = 0;
+let slideInterval = null;
+let activeChatId = 'chat-1';
+let activeModalItem = null;
+
+document.addEventListener('DOMContentLoaded', () => {
+  initHeroCarousel();
+  renderCategories();
+  renderRepeatingGroups();
+  renderReservations();
+  renderChatList();
+  renderActiveChat();
+  renderFavorites();
+});
+
+function switchTab(tabId) {
+  activeTab = tabId;
+  
+  document.querySelectorAll('.app-view').forEach(view => {
+    view.classList.remove('active');
+  });
+  const targetView = document.getElementById(`view-${tabId}`);
+  if (targetView) targetView.classList.add('active');
+
+  document.querySelectorAll('.bottom-nav .nav-item').forEach(item => {
+    item.classList.remove('active');
+    if (item.getAttribute('data-tab') === tabId) {
+      item.classList.add('active');
+    }
+  });
+
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function initHeroCarousel() {
+  const track = document.getElementById('carouselTrack');
+  const indicators = document.getElementById('carouselIndicators');
+
+  if (!track || !indicators) return;
+
+  track.innerHTML = '';
+  indicators.innerHTML = '';
+
+  HERO_SLIDES.forEach((slide, index) => {
+    const slideEl = document.createElement('div');
+    slideEl.className = `hero-slide ${index === 0 ? 'active' : ''}`;
+    slideEl.style.backgroundImage = `url('${slide.image}')`;
+    
+    slideEl.innerHTML = `
+      <div class="slide-overlay"></div>
+      <div class="slide-top-bar">
+        <span class="slide-badge">${slide.dateBadge}</span>
+      </div>
+      <div class="slide-content">
+        <h2 class="slide-title">${slide.title}</h2>
+        <p class="slide-summary">${slide.summary}</p>
+        <button class="slide-btn" onclick="openHeroModal('${slide.id}')">Ver más</button>
+      </div>
+    `;
+    track.appendChild(slideEl);
+
+    const dot = document.createElement('div');
+    dot.className = `indicator-dot ${index === 0 ? 'active' : ''}`;
+    dot.onclick = () => goToSlide(index);
+    indicators.appendChild(dot);
+  });
+
+  startAutoSlide();
+}
+
+function startAutoSlide() {
+  stopAutoSlide();
+  slideInterval = setInterval(() => {
+    moveSlide(1);
+  }, 5000);
+}
+
+function stopAutoSlide() {
+  if (slideInterval) clearInterval(slideInterval);
+}
+
+function moveSlide(direction) {
+  let newIndex = currentSlideIndex + direction;
+  if (newIndex < 0) newIndex = HERO_SLIDES.length - 1;
+  if (newIndex >= HERO_SLIDES.length) newIndex = 0;
+  goToSlide(newIndex);
+}
+
+function goToSlide(index) {
+  currentSlideIndex = index;
+  const slides = document.querySelectorAll('.hero-slide');
+  const dots = document.querySelectorAll('.indicator-dot');
+
+  slides.forEach((s, i) => s.classList.toggle('active', i === index));
+  dots.forEach((d, i) => d.classList.toggle('active', i === index));
+}
+
+function openHeroModal(slideId) {
+  const slide = HERO_SLIDES.find(s => s.id === slideId);
+  if (slide) {
+    openModal({
+      title: slide.title,
+      subtitle: slide.category + ' - Aggenda Exclusivo',
+      category: slide.category,
+      rating: '5.0 ★ VIP',
+      price: slide.dateBadge,
+      image: slide.image,
+      description: slide.summary + ' Reserva con prioridad a través de nuestra red concierge y disfruta de beneficios únicos como socio Aggenda Gold.',
+      id: slide.id
+    });
+  }
+}
+
+function renderCategories() {
+  const container = document.getElementById('categoriesGroup');
+  if (!container) return;
+
+  container.innerHTML = CATEGORIES.map(cat => `
+    <div class="category-chip" onclick="filterCategory('${cat.id}')">
+      <div class="cat-icon-box ${cat.colorClass}">
+        ${cat.icon}
+      </div>
+      <span class="category-name">${cat.name}</span>
+    </div>
+  `).join('');
+}
+
+function filterCategory(catId) {
+  showToast(`Filtrando categoría: ${catId.toUpperCase()}`);
+}
+
+function renderRepeatingGroups() {
+  renderCardGroup('restaurantsGroup', TOP_RESTAURANTS);
+  renderCardGroup('hotelsGroup', TOP_HOTELS);
+  renderCardGroup('eventsGroup', UNMISSABLE_EVENTS);
+  renderCardGroup('realEstateGroup', REAL_ESTATE_PROJECTS);
+}
+
+function renderCardGroup(containerId, items) {
+  const container = document.getElementById(containerId);
+  if (!container) return;
+
+  container.innerHTML = items.map(item => {
+    const isFav = FAVORITES_IDS.has(item.id);
+    return `
+      <div class="service-card" onclick="openModalById('${item.id}')">
+        <div class="card-image-box">
+          <img src="${item.image}" alt="${item.title}">
+          <button class="card-fav-btn ${isFav ? 'active' : ''}" onclick="event.stopPropagation(); toggleFavoriteCard('${item.id}', this)">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="${isFav ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+          </button>
+          <span class="card-tag">${item.category.toUpperCase()}</span>
+        </div>
+        <div class="card-content">
+          <h3 class="card-title">${item.title}</h3>
+          <p class="card-location">📍 ${item.location}</p>
+          <div class="card-footer-row">
+            <span class="card-rating">${item.rating}</span>
+            <span class="card-price">${item.price}</span>
+          </div>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function renderReservations(statusFilter = 'all') {
+  const container = document.getElementById('reservationsList');
+  if (!container) return;
+
+  let filtered = RESERVATIONS;
+  if (statusFilter === 'proxima') {
+    filtered = RESERVATIONS.filter(r => r.status === 'confirmada' || r.status === 'pendiente');
+  } else if (statusFilter === 'completada') {
+    filtered = RESERVATIONS.filter(r => r.status === 'completada');
+  } else if (statusFilter === 'cancelada') {
+    filtered = RESERVATIONS.filter(r => r.status === 'cancelada');
+  }
+
+  filtered.sort((a, b) => new Date(a.date) - new Date(b.date));
+
+  if (filtered.length === 0) {
+    container.innerHTML = `<div style="padding:20px;text-align:center;color:var(--text-muted);">No hay reservas registradas en este estado.</div>`;
+    return;
+  }
+
+  container.innerHTML = filtered.map(res => `
+    <div class="reservation-card ${res.categoryClass}">
+      <div class="res-header-row">
+        <span class="res-category-badge">${res.categoryLabel}</span>
+        <span class="res-status-tag ${res.status}">${res.statusLabel}</span>
+      </div>
+
+      <div class="res-body">
+        <img src="${res.image}" class="res-thumb" alt="${res.title}">
+        <div class="res-details">
+          <h3 class="res-title">${res.title}</h3>
+          <div class="res-datetime">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+            ${res.displayDate}
+          </div>
+          <p class="res-location">📍 ${res.location}</p>
+        </div>
+      </div>
+
+      <div class="res-actions">
+        <button class="res-action-btn primary" onclick="showReservationQR('${res.code}', '${res.title}')">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+          Ver QR (${res.code})
+        </button>
+        <button class="res-action-btn" onclick="openChatWithProvider('${res.provider}')">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+          Chat
+        </button>
+        <button class="res-action-btn" onclick="showToast('Solicitud de reprogramación enviada')">
+          Reprogramar
+        </button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function filterReservationsStatus(status, btn) {
+  document.querySelectorAll('#view-reservas .pill-btn').forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  renderReservations(status);
+}
+
+function showReservationQR(code, title) {
+  openModal({
+    title: `Código QR de Reserva: ${code}`,
+    subtitle: title,
+    category: 'Reserva Confirmada',
+    rating: 'VÁLIDO EN ENTRADA',
+    price: code,
+    image: 'https://images.unsplash.com/photo-1595079672139-cee25a1d30f2?auto=format&fit=crop&w=600&q=80',
+    description: `Presenta este pase QR digital al llegar al establecimiento o clínica. Código de confirmación: ${code}.`
+  });
+}
+
+function renderChatList() {
+  const container = document.getElementById('conversationsContainer');
+  if (!container) return;
+
+  container.innerHTML = CONVERSATIONS.map(c => `
+    <div class="conversation-item ${c.id === activeChatId ? 'active' : ''}" onclick="selectChat('${c.id}')">
+      <div class="avatar-wrapper">
+        <img src="${c.avatar}" class="avatar-img" alt="${c.name}">
+        <span class="service-type-dot ${c.categoryClass}"></span>
+      </div>
+      <div class="conv-info">
+        <div class="conv-top-row">
+          <span class="conv-name">${c.name}</span>
+          <span class="conv-time">${c.time}</span>
+        </div>
+        <div class="conv-msg">${c.messages[c.messages.length - 1].text}</div>
+      </div>
+      ${c.unreadCount > 0 ? `<span class="conv-badge">${c.unreadCount}</span>` : ''}
+    </div>
+  `).join('');
+}
+
+function renderActiveChat() {
+  const conv = CONVERSATIONS.find(c => c.id === activeChatId);
+  if (!conv) return;
+
+  const header = document.getElementById('activeChatHeader');
+  if (header) {
+    header.innerHTML = `
+      <img src="${conv.avatar}" class="avatar-img" alt="${conv.name}" style="width:40px;height:40px;">
+      <div>
+        <h3 style="font-size:15px;font-weight:800;margin:0;">${conv.name}</h3>
+        <span style="font-size:12px;color:var(--text-muted);">${conv.role} • <strong style="color:var(--text-main);">${conv.categoryTag}</strong></span>
+      </div>
+    `;
+  }
+
+  const banner = document.getElementById('serviceContextBanner');
+  if (banner) {
+    banner.innerHTML = `
+      <span>📌 Service: <strong>${conv.serviceTitle}</strong></span>
+      <button onclick="showToast('Verificando estado del servicio...')" style="background:none;border:none;color:#2563eb;font-weight:700;cursor:pointer;">Ver Ticket</button>
+    `;
+  }
+
+  const body = document.getElementById('chatMessagesBody');
+  if (body) {
+    body.innerHTML = conv.messages.map(m => `
+      <div class="chat-bubble ${m.sender}">
+        ${m.text}
+        <div class="bubble-time">${m.time}</div>
+      </div>
+    `).join('');
+    body.scrollTop = body.scrollHeight;
+  }
+}
+
+function selectChat(chatId) {
+  activeChatId = chatId;
+  const conv = CONVERSATIONS.find(c => c.id === chatId);
+  if (conv) conv.unreadCount = 0;
+  renderChatList();
+  renderActiveChat();
+}
+
+function handleChatKeyDown(event) {
+  if (event.key === 'Enter') {
+    sendChatMessage();
+  }
+}
+
+function sendChatMessage() {
+  const input = document.getElementById('chatTextInput');
+  if (!input || !input.value.trim()) return;
+
+  const msgText = input.value.trim();
+  input.value = '';
+
+  const conv = CONVERSATIONS.find(c => c.id === activeChatId);
+  if (conv) {
+    const timeNow = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    conv.messages.push({ sender: 'user', text: msgText, time: timeNow });
+    renderActiveChat();
+
+    setTimeout(() => {
+      conv.messages.push({
+        sender: 'provider',
+        text: `Hola Mauricio, hemos recibido tu mensaje: "${msgText}". Un asistente se encargará de procesarlo de inmediato.`,
+        time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+      });
+      renderActiveChat();
+    }, 1200);
+  }
+}
+
+function sendQuickReply(text) {
+  const input = document.getElementById('chatTextInput');
+  if (input) {
+    input.value = text;
+    sendChatMessage();
+  }
+}
+
+function simulateAttachment() {
+  showToast('📷 Adjunto seleccionado');
+}
+
+function openChatWithProvider(providerName) {
+  switchTab('chats');
+  const found = CONVERSATIONS.find(c => c.name.toLowerCase().includes(providerName.toLowerCase()));
+  if (found) {
+    selectChat(found.id);
+  } else {
+    showToast(`Iniciando chat directo con ${providerName}...`);
+  }
+}
+
+function getAllItemsList() {
+  return [...TOP_RESTAURANTS, ...TOP_HOTELS, ...UNMISSABLE_EVENTS, ...REAL_ESTATE_PROJECTS];
+}
+
+function renderFavorites(categoryFilter = 'all') {
+  const grid = document.getElementById('favoritesGrid');
+  const countTag = document.getElementById('favCountTag');
+  if (!grid) return;
+
+  const allItems = getAllItemsList();
+  let favItems = allItems.filter(item => FAVORITES_IDS.has(item.id));
+
+  if (categoryFilter !== 'all') {
+    favItems = favItems.filter(item => item.category === categoryFilter);
+  }
+
+  if (countTag) countTag.textContent = `${FAVORITES_IDS.size} guardados`;
+
+  if (favItems.length === 0) {
+    grid.innerHTML = `<div style="grid-column:1/-1;padding:20px;text-align:center;color:var(--text-muted);">No tienes elementos en favoritos para esta categoría.</div>`;
+    return;
+  }
+
+  grid.innerHTML = favItems.map(item => `
+    <div class="service-card fav-card" onclick="openModalById('${item.id}')">
+      <div class="card-image-box">
+        <img src="${item.image}" alt="${item.title}">
+        <button class="card-fav-btn active" onclick="event.stopPropagation(); toggleFavoriteCard('${item.id}', this)">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+        </button>
+        <span class="card-tag">${item.category.toUpperCase()}</span>
+      </div>
+      <div class="card-content">
+        <h3 class="card-title">${item.title}</h3>
+        <p class="card-location">📍 ${item.location}</p>
+        <div class="card-footer-row">
+          <span class="card-rating">${item.rating}</span>
+          <button class="btn-primary" style="padding:6px 14px;font-size:12px;" onclick="event.stopPropagation(); openModalById('${item.id}')">Reservar</button>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function filterFavCategory(cat, btn) {
+  document.querySelectorAll('#favCategoryFilter .pill-btn').forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  renderFavorites(cat);
+}
+
+function toggleFavoriteCard(itemId, btnEl) {
+  if (FAVORITES_IDS.has(itemId)) {
+    FAVORITES_IDS.delete(itemId);
+    if (btnEl) btnEl.classList.remove('active');
+    showToast('Removido de Favoritos');
+  } else {
+    FAVORITES_IDS.add(itemId);
+    if (btnEl) btnEl.classList.add('active');
+    showToast('❤️ Guardado en Favoritos');
+  }
+  renderFavorites();
+}
+
+function openModalById(itemId) {
+  const item = getAllItemsList().find(i => i.id === itemId);
+  if (item) {
+    openModal(item);
+  }
+}
+
+function openModal(item) {
+  activeModalItem = item;
+  document.getElementById('modalTitle').textContent = item.title;
+  document.getElementById('modalSubtitle').textContent = item.subtitle || item.location;
+  document.getElementById('modalCategoryBadge').textContent = item.category ? item.category.toUpperCase() : 'AGGENDA';
+  document.getElementById('modalRating').textContent = item.rating || '4.9 ★';
+  document.getElementById('modalPrice').textContent = item.price || '$$$';
+  document.getElementById('modalDescription').textContent = item.description || 'Servicio destacado en la plataforma Aggenda.';
+  document.getElementById('modalImg').src = item.image;
+
+  const isFav = FAVORITES_IDS.has(item.id);
+  const modalFavBtn = document.getElementById('modalFavBtn');
+  if (modalFavBtn) {
+    modalFavBtn.classList.toggle('active', isFav);
+  }
+
+  document.getElementById('detailModal').classList.add('active');
+}
+
+function closeModal() {
+  document.getElementById('detailModal').classList.remove('active');
+}
+
+function toggleModalFav() {
+  if (activeModalItem) {
+    toggleFavoriteCard(activeModalItem.id);
+    const isFav = FAVORITES_IDS.has(activeModalItem.id);
+    document.getElementById('modalFavBtn').classList.toggle('active', isFav);
+  }
+}
+
+function simulateBookingProcess() {
+  closeModal();
+  showToast('🎉 ¡Reserva confirmada con éxito!');
+  switchTab('reservas');
+}
+
+function openChatFromModal() {
+  closeModal();
+  if (activeModalItem) {
+    openChatWithProvider(activeModalItem.title);
+  }
+}
+
+function toggleTheme() {
+  const current = document.documentElement.getAttribute('data-theme');
+  const next = current === 'dark' ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', next);
+
+  const switchEl = document.getElementById('themeSwitch');
+  if (switchEl) switchEl.checked = (next === 'dark');
+
+  showToast(`Modo ${next === 'dark' ? 'Oscuro 🌙' : 'Claro ☀️'} activado`);
+}
+
+function handleGlobalSearch(query) {
+  if (query.length > 2) {
+    showToast(`Buscando: "${query}"...`);
+  }
+}
+
+function showNotificationToast() {
+  showToast('🔔 Tienes 3 notificaciones de tus próximas citas');
+}
+
+function showProfileToast(featureName) {
+  showToast(`Abriendo ${featureName}...`);
+}
+
+function showToast(msg) {
+  const container = document.getElementById('toastContainer');
+  if (!container) return;
+
+  const toast = document.createElement('div');
+  toast.className = 'toast';
+  toast.textContent = msg;
+  container.appendChild(toast);
+
+  setTimeout(() => {
+    toast.remove();
+  }, 2500);
+}
+  </script>
+</body>
+</html>
