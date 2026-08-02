@@ -954,10 +954,60 @@ body {
   height: calc(100vh - var(--header-height) - var(--nav-height) - 40px);
 }
 
+@media (max-width: 899px) {
+  /* On mobile, show only contacts list or active chat detail */
+  .chats-layout .chat-detail-panel {
+    display: none;
+  }
+  .chats-layout.show-chat-detail .chat-detail-panel {
+    display: flex;
+  }
+  .chats-layout.show-chat-detail .chat-list-panel {
+    display: none;
+  }
+}
+
 @media (min-width: 900px) {
   .chats-layout {
     grid-template-columns: 320px 1fr;
   }
+}
+
+.chat-back-btn {
+  background: none;
+  border: none;
+  color: var(--text-main);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px;
+  margin-right: 8px;
+  border-radius: var(--radius-full);
+  transition: background 0.2s;
+}
+
+.chat-back-btn:hover {
+  background: var(--border-light);
+}
+
+@media (min-width: 900px) {
+  .chat-back-btn {
+    display: none;
+  }
+}
+
+.chat-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+  color: var(--text-muted);
+  text-align: center;
+  height: 100%;
+  min-height: 450px;
+  background: var(--bg-surface);
 }
 
 .chat-list-panel {

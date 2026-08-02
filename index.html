@@ -356,6 +356,18 @@ body {
   background-color: #000;
 }
 
+/* Mobile: full-width carousel, no rounded corners */
+@media (max-width: 599px) {
+  .hero-carousel-container {
+    border-radius: 0;
+    margin-left: -16px;
+    margin-right: -16px;
+    width: calc(100% + 32px);
+    box-shadow: none;
+    height: 380px;
+  }
+}
+
 .carousel-track {
   width: 100%;
   height: 100%;
@@ -462,31 +474,10 @@ body {
   background: #f8fafc;
 }
 
+/* Hide carousel arrows */
 .carousel-arrow {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 36px;
-  height: 36px;
-  border-radius: var(--radius-full);
-  background: rgba(0, 0, 0, 0.35);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  color: #ffffff;
-  backdrop-filter: blur(4px);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  z-index: 3;
-  transition: all 0.2s ease;
+  display: none;
 }
-
-.carousel-arrow:hover {
-  background: rgba(0, 0, 0, 0.6);
-}
-
-.prev-arrow { left: 10px; }
-.next-arrow { right: 10px; }
 
 .carousel-indicators {
   position: absolute;
@@ -510,6 +501,555 @@ body {
 .indicator-dot.active {
   width: 24px;
   background: #ffffff;
+}
+
+/* ================= CATEGORY SEARCH MODAL ================= */
+.category-search-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(8px);
+  z-index: 250;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+}
+
+.category-search-overlay.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+.category-search-panel {
+  position: fixed;
+  top: 0; left: 50%; 
+  transform: translateX(-50%) translateY(-100%);
+  width: 100%;
+  max-width: 480px;
+  max-height: 85vh;
+  background: var(--bg-surface);
+  border-radius: 0 0 var(--radius-xl) var(--radius-xl);
+  box-shadow: var(--shadow-lg);
+  z-index: 260;
+  overflow-y: auto;
+  transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  padding: 20px;
+}
+
+.category-search-overlay.active + .category-search-panel,
+.category-search-panel.active {
+  transform: translateX(-50%) translateY(0);
+}
+
+.cat-search-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.cat-search-header h3 {
+  font-size: 18px;
+  font-weight: 800;
+}
+
+.cat-search-close {
+  width: 34px;
+  height: 34px;
+  border-radius: var(--radius-full);
+  border: 1px solid var(--border-color);
+  background: var(--bg-surface);
+  color: var(--text-main);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.cat-search-input-wrapper {
+  position: relative;
+  margin-bottom: 20px;
+}
+
+.cat-search-input-wrapper input {
+  width: 100%;
+  height: 44px;
+  padding: 0 14px 0 40px;
+  border-radius: var(--radius-full);
+  border: 1.5px solid var(--border-color);
+  background: var(--bg-primary);
+  color: var(--text-main);
+  font-size: 14px;
+  font-family: inherit;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.cat-search-input-wrapper input:focus {
+  border-color: #3b82f6;
+}
+
+.cat-search-input-wrapper .cat-search-icon {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-muted);
+  pointer-events: none;
+}
+
+.cat-search-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+
+.cat-search-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 16px 8px;
+  border-radius: var(--radius-lg);
+  background: var(--bg-primary);
+  border: 1px solid var(--border-light);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: center;
+}
+
+.cat-search-item:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-sm);
+  border-color: var(--border-color);
+}
+
+.cat-search-item:active {
+  transform: scale(0.97);
+}
+
+.cat-search-item .cat-search-emoji {
+  font-size: 28px;
+  width: 52px;
+  height: 52px;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cat-search-item .cat-search-emoji.med { background: var(--cat-med-bg); }
+.cat-search-item .cat-search-emoji.rest { background: var(--cat-rest-bg); }
+.cat-search-item .cat-search-emoji.hotel { background: var(--cat-hotel-bg); }
+.cat-search-item .cat-search-emoji.beauty { background: var(--cat-beauty-bg); }
+.cat-search-item .cat-search-emoji.odonto { background: var(--cat-odonto-bg); }
+.cat-search-item .cat-search-emoji.event { background: var(--cat-event-bg); }
+.cat-search-item .cat-search-emoji.real { background: var(--cat-real-bg); }
+
+.cat-search-item-label {
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+/* ================= PROVIDERS LISTING VIEW ================= */
+.providers-view-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: var(--bg-primary);
+  z-index: 300;
+  display: flex;
+  justify-content: center;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+}
+
+.providers-view-overlay.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+.providers-view-container {
+  width: 100%;
+  max-width: 480px;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: var(--bg-primary);
+}
+
+@media (min-width: 900px) {
+  .providers-view-container {
+    max-width: 960px;
+  }
+}
+
+.providers-top-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 16px;
+  background: var(--bg-surface);
+  border-bottom: 1px solid var(--border-color);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.providers-back-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-full);
+  border: 1px solid var(--border-color);
+  background: var(--bg-surface);
+  color: var(--text-main);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.providers-city-search {
+  flex: 1;
+  height: 38px;
+  padding: 0 14px 0 36px;
+  border-radius: var(--radius-full);
+  border: 1px solid var(--border-color);
+  background: var(--bg-primary);
+  color: var(--text-main);
+  font-size: 13.5px;
+  font-family: inherit;
+  outline: none;
+  position: relative;
+}
+
+.providers-city-search-wrapper {
+  flex: 1;
+  position: relative;
+}
+
+.providers-city-search-wrapper .prov-search-icon {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-muted);
+  pointer-events: none;
+}
+
+.providers-filter-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-full);
+  border: 1px solid var(--border-color);
+  background: var(--bg-surface);
+  color: var(--text-main);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.providers-name-search {
+  padding: 0 16px;
+  margin: 12px 0;
+}
+
+.providers-name-search input {
+  width: 100%;
+  height: 44px;
+  padding: 0 14px 0 40px;
+  border-radius: var(--radius-full);
+  border: 1.5px solid var(--border-color);
+  background: var(--bg-surface);
+  color: var(--text-main);
+  font-size: 14px;
+  font-family: inherit;
+  outline: none;
+}
+
+.providers-name-search .prov-name-icon {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-muted);
+  pointer-events: none;
+}
+
+.providers-subcategories {
+  display: flex;
+  gap: 16px;
+  padding: 0 16px 12px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.providers-subcategories::-webkit-scrollbar {
+  display: none;
+}
+
+.subcat-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  flex: 0 0 auto;
+  cursor: pointer;
+  min-width: 68px;
+  transition: all 0.2s ease;
+}
+
+.subcat-item.active .subcat-icon {
+  border: 2px solid var(--text-main);
+  box-shadow: var(--shadow-sm);
+}
+
+.subcat-icon {
+  width: 56px;
+  height: 56px;
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  border: 2px solid transparent;
+  transition: all 0.2s ease;
+}
+
+.subcat-label {
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--text-main);
+  text-align: center;
+  white-space: nowrap;
+}
+
+.providers-list {
+  flex: 1;
+  overflow-y: auto;
+  padding: 0 16px 100px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-height: 0;
+}
+
+.provider-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  flex-shrink: 0;
+}
+
+.provider-card-image {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+}
+
+.provider-card-body {
+  padding: 14px;
+}
+
+.provider-card-top {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.provider-avatar {
+  width: 56px;
+  height: 56px;
+  border-radius: var(--radius-full);
+  object-fit: cover;
+  border: 2px solid var(--border-color);
+  flex-shrink: 0;
+}
+
+.provider-info {
+  flex: 1;
+}
+
+.provider-name {
+  font-size: 16px;
+  font-weight: 800;
+  color: var(--text-main);
+  margin-bottom: 2px;
+}
+
+.provider-specialty {
+  font-size: 13px;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+.provider-location {
+  font-size: 12.5px;
+  color: var(--text-muted);
+  font-weight: 600;
+  margin-top: 2px;
+}
+
+.provider-phone {
+  font-size: 13px;
+  color: var(--text-main);
+  font-weight: 600;
+  margin-top: 4px;
+}
+
+.provider-see-more {
+  display: inline-block;
+  margin-top: 6px;
+  padding: 5px 14px;
+  border-radius: var(--radius-full);
+  background: #f59e0b;
+  color: #ffffff;
+  font-size: 12px;
+  font-weight: 700;
+  border: none;
+  cursor: pointer;
+}
+
+.provider-card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  border-top: 1px solid var(--border-light);
+}
+
+.provider-rating {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
+.provider-rating .star {
+  color: #f59e0b;
+}
+
+.provider-footer-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.provider-icon-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-full);
+  border: 1px solid var(--border-color);
+  background: var(--bg-surface);
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.provider-book-btn {
+  padding: 8px 18px;
+  border-radius: var(--radius-full);
+  background: #2563eb;
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 700;
+  border: none;
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  transition: all 0.2s ease;
+}
+
+.provider-book-btn:hover {
+  background: #1d4ed8;
+  transform: translateY(-1px);
+}
+
+/* Provider card variant for restaurants/hotels with big image */
+.provider-card.image-card .provider-card-body {
+  padding: 14px;
+}
+
+.provider-card.image-card .provider-card-info-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 4px;
+}
+
+.provider-card.image-card .provider-card-title {
+  font-size: 17px;
+  font-weight: 800;
+  color: var(--text-main);
+}
+
+.provider-card.image-card .provider-card-rating {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+.provider-card.image-card .provider-card-rating .star {
+  color: #f59e0b;
+}
+
+.provider-card-location-text {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-main);
+  margin-bottom: 2px;
+}
+
+.provider-card-detail {
+  font-size: 12.5px;
+  color: var(--text-muted);
+  margin-bottom: 2px;
+}
+
+.provider-card-price {
+  font-size: 15px;
+  font-weight: 800;
+  color: var(--text-main);
+  margin-top: 4px;
+}
+
+.provider-card-footer-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 10px;
+}
+
+.provider-card-reserve-btn {
+  padding: 10px 24px;
+  border-radius: var(--radius-full);
+  background: #ef4444;
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 800;
+  border: none;
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  transition: all 0.2s ease;
+}
+
+.provider-card-reserve-btn:hover {
+  background: #dc2626;
+  transform: translateY(-1px);
 }
 
 /* ================= SECTIONS & REPEATING GROUPS ================= */
@@ -960,6 +1500,62 @@ body {
   grid-template-columns: 1fr;
   gap: 16px;
   min-height: 500px;
+}
+
+@media (max-width: 899px) {
+  /* On mobile, show only contacts list or active chat detail */
+  .chats-layout .chat-detail-panel {
+    display: none;
+  }
+  .chats-layout.show-chat-detail .chat-detail-panel {
+    display: flex;
+  }
+  .chats-layout.show-chat-detail .chat-list-panel {
+    display: none;
+  }
+}
+
+@media (min-width: 900px) {
+  .chats-layout {
+    grid-template-columns: 320px 1fr;
+  }
+}
+
+.chat-back-btn {
+  background: none;
+  border: none;
+  color: var(--text-main);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px;
+  margin-right: 8px;
+  border-radius: var(--radius-full);
+  transition: background 0.2s;
+}
+
+.chat-back-btn:hover {
+  background: var(--border-light);
+}
+
+@media (min-width: 900px) {
+  .chat-back-btn {
+    display: none;
+  }
+}
+
+.chat-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+  color: var(--text-muted);
+  text-align: center;
+  height: 100%;
+  min-height: 450px;
+  background: var(--bg-surface);
 }
 
 .chat-list-panel {
@@ -1735,6 +2331,738 @@ input:checked + .slider:before { transform: translateX(20px); }
   from { opacity: 0; transform: translateY(10px); }
   to { opacity: 1; transform: translateY(0); }
 }
+
+/* ================= BOOKING FLOW OVERLAY ================= */
+.booking-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: var(--bg-primary);
+  z-index: 400;
+  display: flex;
+  justify-content: center;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+}
+
+.booking-overlay.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+.booking-container {
+  width: 100%;
+  max-width: 480px;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: var(--bg-primary);
+  overflow-y: auto;
+}
+
+.booking-top-bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  background: var(--bg-surface);
+  border-bottom: 1px solid var(--border-color);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.booking-top-bar h2 {
+  flex: 1;
+  font-size: 17px;
+  font-weight: 800;
+  color: var(--text-main);
+}
+
+.booking-close-btn {
+  width: 34px; height: 34px;
+  border-radius: var(--radius-full);
+  border: 1px solid var(--border-color);
+  background: var(--bg-surface);
+  color: var(--text-main);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+/* Progress Steps */
+.booking-progress {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 16px 20px 8px;
+}
+
+.bp-step {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.bp-circle {
+  width: 30px; height: 30px;
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 700;
+  border: 2px solid var(--border-color);
+  color: var(--text-muted);
+  background: var(--bg-surface);
+  transition: all 0.3s ease;
+}
+
+.bp-circle.active {
+  background: #2563eb;
+  border-color: #2563eb;
+  color: #fff;
+}
+
+.bp-circle.done {
+  background: #10b981;
+  border-color: #10b981;
+  color: #fff;
+}
+
+.bp-line {
+  width: 28px;
+  height: 3px;
+  border-radius: 2px;
+  background: var(--border-color);
+  transition: background 0.3s ease;
+}
+
+.bp-line.done {
+  background: #10b981;
+}
+
+.bp-label {
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.bp-step.active .bp-label {
+  color: #2563eb;
+}
+
+.bp-step.done .bp-label {
+  color: #10b981;
+}
+
+/* Booking Steps Content */
+.booking-step {
+  display: none;
+  padding: 20px;
+  flex-direction: column;
+  gap: 20px;
+  animation: bookStepIn 0.3s ease;
+}
+
+.booking-step.active {
+  display: flex;
+}
+
+@keyframes bookStepIn {
+  from { opacity: 0; transform: translateX(20px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+/* Service mini-card at top */
+.booking-service-card {
+  display: flex;
+  gap: 12px;
+  padding: 14px;
+  background: var(--bg-surface);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-color);
+}
+
+.booking-service-card img {
+  width: 60px; height: 60px;
+  border-radius: var(--radius-md);
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.booking-service-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.booking-service-info h3 {
+  font-size: 15px;
+  font-weight: 800;
+  color: var(--text-main);
+  margin-bottom: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.booking-service-info p {
+  font-size: 12.5px;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+.booking-service-info .bsi-cat {
+  display: inline-block;
+  margin-top: 4px;
+  padding: 2px 10px;
+  border-radius: var(--radius-full);
+  background: #2563eb;
+  color: #fff;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Section Labels */
+.booking-section-title {
+  font-size: 15px;
+  font-weight: 800;
+  color: var(--text-main);
+  margin-bottom: -8px;
+}
+
+/* Calendar */
+.booking-calendar {
+  background: var(--bg-surface);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-color);
+  overflow: hidden;
+}
+
+.cal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--border-light);
+}
+
+.cal-header span {
+  font-size: 15px;
+  font-weight: 800;
+  color: var(--text-main);
+}
+
+.cal-nav-btn {
+  width: 30px; height: 30px;
+  border-radius: var(--radius-full);
+  border: 1px solid var(--border-color);
+  background: var(--bg-surface);
+  color: var(--text-main);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.cal-weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  padding: 8px 8px 4px;
+}
+
+.cal-weekdays span {
+  text-align: center;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-transform: uppercase;
+}
+
+.cal-days {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  padding: 4px 8px 12px;
+  gap: 4px;
+}
+
+.cal-day {
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-full);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-main);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: none;
+  background: transparent;
+}
+
+.cal-day:hover:not(.disabled):not(.empty) {
+  background: var(--bg-surface-hover);
+}
+
+.cal-day.today {
+  border: 2px solid #2563eb;
+}
+
+.cal-day.selected {
+  background: #2563eb;
+  color: #fff;
+  font-weight: 800;
+}
+
+.cal-day.disabled {
+  color: var(--text-light);
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.cal-day.empty {
+  visibility: hidden;
+}
+
+/* Time Slots */
+.time-slots-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+
+.time-slot {
+  padding: 12px 8px;
+  border-radius: var(--radius-md);
+  border: 1.5px solid var(--border-color);
+  background: var(--bg-surface);
+  color: var(--text-main);
+  font-size: 13px;
+  font-weight: 700;
+  font-family: inherit;
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.2s ease;
+}
+
+.time-slot:hover {
+  border-color: #2563eb;
+  background: var(--bg-surface-hover);
+}
+
+.time-slot.selected {
+  background: #2563eb;
+  border-color: #2563eb;
+  color: #fff;
+}
+
+.time-slot.disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+/* Booking Form */
+.booking-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.booking-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.booking-field label {
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.booking-input {
+  height: 46px;
+  padding: 0 16px;
+  border-radius: var(--radius-md);
+  border: 1.5px solid var(--border-color);
+  background: var(--bg-surface);
+  color: var(--text-main);
+  font-size: 14px;
+  font-family: inherit;
+  font-weight: 600;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.booking-input:focus {
+  border-color: #2563eb;
+}
+
+.booking-textarea {
+  min-height: 80px;
+  padding: 12px 16px;
+  border-radius: var(--radius-md);
+  border: 1.5px solid var(--border-color);
+  background: var(--bg-surface);
+  color: var(--text-main);
+  font-size: 14px;
+  font-family: inherit;
+  font-weight: 500;
+  outline: none;
+  resize: vertical;
+  transition: border-color 0.2s;
+}
+
+.booking-textarea:focus {
+  border-color: #2563eb;
+}
+
+.booking-toggle-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px;
+  background: var(--bg-surface);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-color);
+}
+
+.booking-toggle-row span {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--text-main);
+}
+
+.toggle-switch {
+  width: 44px; height: 24px;
+  border-radius: 12px;
+  background: var(--border-color);
+  position: relative;
+  cursor: pointer;
+  transition: background 0.2s;
+  border: none;
+}
+
+.toggle-switch.active {
+  background: #2563eb;
+}
+
+.toggle-switch::after {
+  content: '';
+  width: 20px; height: 20px;
+  border-radius: var(--radius-full);
+  background: #fff;
+  position: absolute;
+  top: 2px; left: 2px;
+  transition: transform 0.2s;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+}
+
+.toggle-switch.active::after {
+  transform: translateX(20px);
+}
+
+/* Summary Card */
+.booking-summary {
+  background: var(--bg-surface);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-color);
+  overflow: hidden;
+}
+
+.booking-summary-header {
+  position: relative;
+  height: 140px;
+}
+
+.booking-summary-header img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+}
+
+.booking-summary-header .bsh-badge {
+  position: absolute;
+  bottom: 10px; left: 12px;
+  background: rgba(0,0,0,0.7);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 4px 12px;
+  border-radius: var(--radius-full);
+}
+
+.booking-summary-body {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.booking-summary-body h3 {
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--text-main);
+}
+
+.bsb-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 13.5px;
+}
+
+.bsb-row .bsb-icon {
+  font-size: 18px;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.bsb-row .bsb-label {
+  color: var(--text-muted);
+  font-weight: 500;
+  min-width: 60px;
+}
+
+.bsb-row .bsb-value {
+  color: var(--text-main);
+  font-weight: 700;
+}
+
+.booking-code-box {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 14px;
+  background: linear-gradient(135deg, #1e293b, #334155);
+  border-radius: var(--radius-md);
+  color: #fff;
+}
+
+.booking-code-box .code-label {
+  font-size: 12px;
+  font-weight: 600;
+  opacity: 0.7;
+}
+
+.booking-code-box .code-value {
+  font-size: 20px;
+  font-weight: 800;
+  letter-spacing: 2px;
+  font-family: 'Courier New', monospace;
+}
+
+.booking-terms-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 10px 0;
+}
+
+.booking-terms-row input[type='checkbox'] {
+  width: 18px; height: 18px;
+  margin-top: 2px;
+  accent-color: #2563eb;
+  flex-shrink: 0;
+}
+
+.booking-terms-row label {
+  font-size: 12.5px;
+  color: var(--text-muted);
+  font-weight: 500;
+  line-height: 1.4;
+}
+
+/* Booking Buttons */
+.booking-actions {
+  display: flex;
+  gap: 10px;
+  padding-top: 4px;
+}
+
+.booking-btn {
+  flex: 1;
+  padding: 14px;
+  border-radius: var(--radius-lg);
+  font-size: 14.5px;
+  font-weight: 800;
+  font-family: inherit;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.2s ease;
+  border: none;
+}
+
+.booking-btn.primary {
+  background: #2563eb;
+  color: #fff;
+}
+
+.booking-btn.primary:hover {
+  background: #1d4ed8;
+  transform: translateY(-1px);
+}
+
+.booking-btn.secondary {
+  background: var(--bg-surface);
+  color: var(--text-main);
+  border: 1.5px solid var(--border-color);
+}
+
+.booking-btn.confirm {
+  background: #10b981;
+  color: #fff;
+}
+
+.booking-btn.confirm:hover {
+  background: #059669;
+  transform: translateY(-1px);
+}
+
+.booking-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Success Screen */
+.booking-success {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 16px;
+  padding: 30px 20px 40px;
+}
+
+.success-circle {
+  width: 90px; height: 90px;
+  border-radius: var(--radius-full);
+  background: linear-gradient(135deg, #10b981, #059669);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: successPop 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes successPop {
+  0% { transform: scale(0); }
+  70% { transform: scale(1.15); }
+  100% { transform: scale(1); }
+}
+
+.success-circle svg {
+  width: 44px; height: 44px;
+  stroke: #fff;
+  stroke-width: 3;
+  fill: none;
+  stroke-dasharray: 60;
+  stroke-dashoffset: 60;
+  animation: drawCheck 0.6s 0.3s ease forwards;
+}
+
+@keyframes drawCheck {
+  to { stroke-dashoffset: 0; }
+}
+
+.success-title {
+  font-size: 24px;
+  font-weight: 800;
+  color: var(--text-main);
+}
+
+.success-subtitle {
+  font-size: 14px;
+  color: var(--text-muted);
+  line-height: 1.5;
+  max-width: 320px;
+}
+
+.success-code-card {
+  width: 100%;
+  max-width: 300px;
+  padding: 20px;
+  background: linear-gradient(135deg, #1e293b, #334155);
+  border-radius: var(--radius-lg);
+  color: #fff;
+  text-align: center;
+}
+
+.success-code-card .scc-label {
+  font-size: 11px;
+  font-weight: 600;
+  opacity: 0.6;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 6px;
+}
+
+.success-code-card .scc-code {
+  font-size: 28px;
+  font-weight: 800;
+  letter-spacing: 3px;
+  font-family: 'Courier New', monospace;
+  margin-bottom: 10px;
+}
+
+.success-code-card .scc-qr {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  font-size: 12px;
+  opacity: 0.6;
+}
+
+.success-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+  max-width: 320px;
+  margin-top: 6px;
+}
+
+.success-actions .booking-btn {
+  width: 100%;
+}
+
+/* Confetti */
+.confetti-container {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  pointer-events: none;
+  z-index: 500;
+  overflow: hidden;
+}
+
+.confetti-piece {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+  top: -10px;
+  animation: confettiFall linear forwards;
+}
+
+@keyframes confettiFall {
+  0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+  100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+}
   </style>
 </head>
 <body>
@@ -1766,20 +3094,10 @@ input:checked + .slider:before { transform: translateX(20px); }
         </div>
 
         <div class="header-actions">
-          <button class="icon-btn theme-toggle-btn" id="themeToggleBtn" onclick="toggleTheme()" title="Cambiar tema">
-            <svg class="sun-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <circle cx="12" cy="12" r="5"></circle>
-              <line x1="12" y1="1" x2="12" y2="3"></line>
-              <line x1="12" y1="21" x2="12" y2="23"></line>
-              <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
-              <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
-              <line x1="1" y1="12" x2="3" y2="12"></line>
-              <line x1="21" y1="12" x2="23" y2="12"></line>
-              <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
-              <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
-            </svg>
-            <svg class="moon-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+          <button class="icon-btn" id="categorySearchBtn" onclick="openCategorySearch()" title="Buscar por categoría">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="11" cy="11" r="8"></circle>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
             </svg>
           </button>
 
@@ -1806,13 +3124,7 @@ input:checked + .slider:before { transform: translateX(20px); }
             <!-- Dynamic slides rendered via JS -->
           </div>
 
-          <!-- Carousel Navigation Controls -->
-          <button class="carousel-arrow prev-arrow" onclick="moveSlide(-1)" aria-label="Anterior">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
-          </button>
-          <button class="carousel-arrow next-arrow" onclick="moveSlide(1)" aria-label="Siguiente">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
-          </button>
+          <!-- Carousel arrows removed for cleaner mobile UX -->
 
           <div class="carousel-indicators" id="carouselIndicators">
             <!-- Indicator dots rendered via JS -->
@@ -2217,6 +3529,135 @@ input:checked + .slider:before { transform: translateX(20px); }
     </div>
   </div>
 
+  <!-- BOOKING FLOW OVERLAY -->
+  <div class="booking-overlay" id="bookingOverlay">
+    <div class="booking-container">
+      <div class="booking-top-bar">
+        <button class="booking-close-btn" onclick="closeBookingFlow()">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
+        <h2>Reservar Cita</h2>
+      </div>
+
+      <!-- Progress Bar -->
+      <div class="booking-progress" id="bookingProgress"></div>
+
+      <!-- STEP 1: Date & Time -->
+      <div class="booking-step active" id="bookingStep1">
+        <div class="booking-service-card" id="bookingServiceCard"></div>
+        <span class="booking-section-title">📅 Selecciona la Fecha</span>
+        <div class="booking-calendar" id="bookingCalendar"></div>
+        <span class="booking-section-title">🕐 Horario Disponible</span>
+        <div class="time-slots-grid" id="bookingTimeSlots"></div>
+        <div class="booking-actions">
+          <button class="booking-btn primary" onclick="goToBookingStep(2)">Continuar</button>
+        </div>
+      </div>
+
+      <!-- STEP 2: Client Info -->
+      <div class="booking-step" id="bookingStep2">
+        <div class="booking-form">
+          <div class="booking-field">
+            <label>Nombre Completo</label>
+            <input type="text" class="booking-input" id="bookingName" value="Mauricio Morales" placeholder="Tu nombre completo">
+          </div>
+          <div class="booking-field">
+            <label>Teléfono</label>
+            <input type="tel" class="booking-input" id="bookingPhone" placeholder="+57 314 890 4919">
+          </div>
+          <div class="booking-field">
+            <label>Email</label>
+            <input type="email" class="booking-input" id="bookingEmail" placeholder="tu@email.com">
+          </div>
+          <div class="booking-field">
+            <label>Notas Adicionales (Opcional)</label>
+            <textarea class="booking-textarea" id="bookingNotes" placeholder="Alergias, requerimientos especiales, número de acompañantes..."></textarea>
+          </div>
+          <div class="booking-toggle-row">
+            <span>📲 Recordatorio por WhatsApp</span>
+            <button class="toggle-switch active" id="toggleWhatsapp" onclick="this.classList.toggle('active')"></button>
+          </div>
+          <div class="booking-toggle-row">
+            <span>📧 Confirmación por Email</span>
+            <button class="toggle-switch active" id="toggleEmail" onclick="this.classList.toggle('active')"></button>
+          </div>
+        </div>
+        <div class="booking-actions">
+          <button class="booking-btn secondary" onclick="goToBookingStep(1)">← Volver</button>
+          <button class="booking-btn primary" onclick="goToBookingStep(3)">Continuar</button>
+        </div>
+      </div>
+
+      <!-- STEP 3: Summary -->
+      <div class="booking-step" id="bookingStep3">
+        <div class="booking-summary" id="bookingSummary"></div>
+        <div class="booking-code-box" id="bookingCodeBox"></div>
+        <div class="booking-terms-row">
+          <input type="checkbox" id="bookingTerms">
+          <label for="bookingTerms">Acepto los <b>Términos y Condiciones</b> de Aggenda y la política de cancelación del prestador. Entiendo que puedo reprogramar hasta 24 horas antes sin costo adicional.</label>
+        </div>
+        <div class="booking-actions">
+          <button class="booking-btn secondary" onclick="goToBookingStep(2)">← Volver</button>
+          <button class="booking-btn confirm" id="confirmBookingBtn" onclick="confirmBooking()">✓ Confirmar Reserva</button>
+        </div>
+      </div>
+
+      <!-- STEP 4: Success -->
+      <div class="booking-step" id="bookingStep4">
+        <div class="booking-success" id="bookingSuccess"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CATEGORY SEARCH MODAL -->
+  <div class="category-search-overlay" id="categorySearchOverlay" onclick="closeCategorySearch()"></div>
+  <div class="category-search-panel" id="categorySearchPanel">
+    <div class="cat-search-header">
+      <h3>Buscar por Categoría</h3>
+      <button class="cat-search-close" onclick="closeCategorySearch()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+      </button>
+    </div>
+    <div class="cat-search-input-wrapper">
+      <svg class="cat-search-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+      <input type="text" id="catSearchInput" placeholder="¿Qué estás buscando?" oninput="filterCategorySearch(this.value)">
+    </div>
+    <div class="cat-search-grid" id="catSearchGrid">
+      <!-- Rendered via JS -->
+    </div>
+  </div>
+
+  <!-- PROVIDERS LISTING VIEW -->
+  <div class="providers-view-overlay" id="providersViewOverlay">
+    <div class="providers-view-container">
+      <div class="providers-top-bar">
+        <button class="providers-back-btn" onclick="closeProvidersView()">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"></polyline></svg>
+        </button>
+        <div class="providers-city-search-wrapper">
+          <svg class="prov-search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+          <input type="text" class="providers-city-search" id="providersCitySearch" placeholder="Ingresa una ciudad">
+        </div>
+        <button class="providers-filter-btn" onclick="showToast('Filtros avanzados próximamente')">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="4" y1="21" x2="4" y2="14"></line><line x1="4" y1="10" x2="4" y2="3"></line><line x1="12" y1="21" x2="12" y2="12"></line><line x1="12" y1="8" x2="12" y2="3"></line><line x1="20" y1="21" x2="20" y2="16"></line><line x1="20" y1="12" x2="20" y2="3"></line><line x1="1" y1="14" x2="7" y2="14"></line><line x1="9" y1="8" x2="15" y2="8"></line><line x1="17" y1="16" x2="23" y2="16"></line></svg>
+        </button>
+      </div>
+
+      <div class="providers-name-search" style="position:relative;">
+        <svg class="prov-name-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="position:absolute;left:30px;top:50%;transform:translateY(-50%);color:var(--text-muted);pointer-events:none;"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+        <input type="text" id="providersNameSearch" placeholder="Busca por Nombre y/o Apellido" oninput="filterProvidersByName(this.value)">
+      </div>
+
+      <div class="providers-subcategories" id="providersSubcategories">
+        <!-- Rendered via JS -->
+      </div>
+
+      <div class="providers-list" id="providersList">
+        <!-- Rendered via JS -->
+      </div>
+    </div>
+  </div>
+
   <!-- TOAST NOTIFICATION CONTAINER -->
   <div class="toast-container" id="toastContainer"></div>
 
@@ -2553,6 +3994,7 @@ let CONVERSATIONS = [
     avatar: 'https://images.unsplash.com/photo-1622253692010-333f2da6031d?auto=format&fit=crop&w=200&q=80',
     categoryTag: 'Médico',
     categoryClass: 'med',
+    city: 'Bogotá',
     unreadCount: 1,
     time: '10:45 AM',
     serviceTitle: 'Cita Médica - Sáb 2 Ago 09:30 AM',
@@ -2569,6 +4011,7 @@ let CONVERSATIONS = [
     avatar: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=200&q=80',
     categoryTag: 'Hospedaje',
     categoryClass: 'hotel',
+    city: 'Cape Town',
     unreadCount: 1,
     time: 'Ayer',
     serviceTitle: 'Reserva Ocean Suite - 10 Septiembre',
@@ -2583,6 +4026,7 @@ let CONVERSATIONS = [
     avatar: 'https://images.unsplash.com/photo-1559339352-11d035aa65de?auto=format&fit=crop&w=200&q=80',
     categoryTag: 'Restaurante',
     categoryClass: 'rest',
+    city: 'Barcelona',
     unreadCount: 0,
     time: '24 Jul',
     serviceTitle: 'Mesa Tasting Menu - 14 Agosto',
@@ -2590,13 +4034,60 @@ let CONVERSATIONS = [
       { sender: 'user', text: 'Hola, quisiéramos solicitar una copa de bienvenida de champagne para la celebración de aniversario.', time: '24 Jul' },
       { sender: 'provider', text: 'Con todo gusto Sr. Morales, lo tenemos anotado en sus notas especiales de mesa.', time: '24 Jul' }
     ]
+  },
+  {
+    id: 'chat-4',
+    name: 'Dra. Carmenza González N',
+    role: 'Médico Psicólogo',
+    avatar: 'https://images.unsplash.com/photo-1594824476967-48c8b964273f?auto=format&fit=crop&w=200&q=80',
+    categoryTag: 'Médico',
+    categoryClass: 'med',
+    city: 'Manizales',
+    unreadCount: 0,
+    time: '22 Jul',
+    serviceTitle: 'Consulta de Terapia de Pareja',
+    messages: [
+      { sender: 'provider', text: 'Hola Mauricio, ¿cómo has estado? Te escribo para confirmar si asistirán a la sesión de este miércoles.', time: '22 Jul' },
+      { sender: 'user', text: 'Hola Dra., sí, por supuesto. Estaremos puntuales a las 4:00 PM.', time: '22 Jul' }
+    ]
+  },
+  {
+    id: 'chat-5',
+    name: 'Studio Glamour',
+    role: 'Peluquería & Estilismo',
+    avatar: 'https://images.unsplash.com/photo-1560066984-138dadb4c035?auto=format&fit=crop&w=200&q=80',
+    categoryTag: 'Belleza',
+    categoryClass: 'beauty',
+    city: 'Bogotá',
+    unreadCount: 0,
+    time: '18 Jul',
+    serviceTitle: 'Corte y Tinte de Cabello',
+    messages: [
+      { sender: 'user', text: 'Hola, me gustaría saber si tienen disponibilidad para mañana en la tarde.', time: '18 Jul' },
+      { sender: 'provider', text: 'Hola Mauricio, sí tenemos espacio a las 3:00 PM y a las 5:30 PM. ¿Cuál prefieres?', time: '18 Jul' }
+    ]
+  },
+  {
+    id: 'chat-6',
+    name: 'Cabaña Bosque de Niebla',
+    role: 'Hospedaje Cabaña',
+    avatar: 'https://images.unsplash.com/photo-1449158743715-0a90ebb6d2d8?auto=format&fit=crop&w=200&q=80',
+    categoryTag: 'Hospedaje',
+    categoryClass: 'hotel',
+    city: 'Salento',
+    unreadCount: 0,
+    time: '15 Jul',
+    serviceTitle: 'Alquiler de Cabaña de Campo',
+    messages: [
+      { sender: 'provider', text: 'Hola Mauricio, te enviamos las indicaciones de llegada para la cabaña. El clima está algo frío, te recomendamos traer abrigo.', time: '15 Jul' }
+    ]
   }
 ];
 
 let activeTab = 'inicio';
 let currentSlideIndex = 0;
 let slideInterval = null;
-let activeChatId = 'chat-1';
+let activeChatId = null;
 let activeModalItem = null;
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -2624,6 +4115,16 @@ function switchTab(tabId) {
       item.classList.add('active');
     }
   });
+
+  if (tabId === 'chats') {
+    const layout = document.querySelector('.chats-layout');
+    if (layout) {
+      layout.classList.remove('show-chat-detail');
+    }
+    activeChatId = null;
+    renderChatList();
+    renderActiveChat();
+  }
 
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
@@ -2712,7 +4213,7 @@ function renderCategories() {
   if (!container) return;
 
   container.innerHTML = CATEGORIES.map(cat => `
-    <div class="category-chip" onclick="filterCategory('${cat.id}')">
+    <div class="category-chip" onclick="showCategoryProviders('${cat.id}')">
       <div class="cat-icon-box ${cat.colorClass}">
         ${cat.icon}
       </div>
@@ -2722,7 +4223,7 @@ function renderCategories() {
 }
 
 function filterCategory(catId) {
-  showToast(`Filtrando categoría: ${catId.toUpperCase()}`);
+  showCategoryProviders(catId);
 }
 
 function renderRepeatingGroups() {
@@ -2849,6 +4350,9 @@ function renderChatList() {
           <span class="conv-name">${c.name}</span>
           <span class="conv-time">${c.time}</span>
         </div>
+        <div class="conv-meta" style="font-size:11.5px;color:var(--text-muted);margin-bottom:2px;font-weight:600;">
+          <span style="color:var(--text-main);">${c.categoryTag}</span> • <span>${c.city}</span>
+        </div>
         <div class="conv-msg">${c.messages[c.messages.length - 1].text}</div>
       </div>
       ${c.unreadCount > 0 ? `<span class="conv-badge">${c.unreadCount}</span>` : ''}
@@ -2857,12 +4361,51 @@ function renderChatList() {
 }
 
 function renderActiveChat() {
+  const detailPanel = document.getElementById('chatDetailPanel');
+  if (!detailPanel) return;
+
   const conv = CONVERSATIONS.find(c => c.id === activeChatId);
-  if (!conv) return;
+
+  if (!conv) {
+    detailPanel.innerHTML = `
+      <div class="chat-empty-state">
+        <div style="font-size:48px;margin-bottom:16px;">💬</div>
+        <h3 style="font-size:18px;font-weight:800;color:var(--text-main);margin-bottom:8px;">Tus Mensajes</h3>
+        <p style="font-size:13.5px;max-width:280px;line-height:1.4;">Selecciona un contacto de la lista para ver su información y abrir la conversación.</p>
+      </div>
+    `;
+    return;
+  }
+
+  // Restore details layout structure if it was empty state
+  if (detailPanel.querySelector('.chat-empty-state')) {
+    detailPanel.innerHTML = `
+      <div class="active-chat-header" id="activeChatHeader"></div>
+      <div class="service-context-banner" id="serviceContextBanner"></div>
+      <div class="chat-messages-body" id="chatMessagesBody"></div>
+      <div class="quick-replies-bar" id="quickRepliesBar">
+        <button class="quick-chip" onclick="sendQuickReply('¿Cuáles son los requisitos de llegada?')">📋 Requisitos de llegada</button>
+        <button class="quick-chip" onclick="sendQuickReply('¿Puedo modificar la hora de mi reserva?')">⏰ Modificar hora</button>
+        <button class="quick-chip" onclick="sendQuickReply('Solicitar ubicación exacta y parqueadero')">📍 Ubicación / Parqueadero</button>
+      </div>
+      <div class="chat-input-footer">
+        <button class="attach-btn" onclick="simulateAttachment()" title="Adjuntar documento">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"></path></svg>
+        </button>
+        <input type="text" id="chatTextInput" placeholder="Escribe un mensaje al prestador..." onkeydown="handleChatKeyDown(event)">
+        <button class="send-btn" onclick="sendChatMessage()">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+        </button>
+      </div>
+    `;
+  }
 
   const header = document.getElementById('activeChatHeader');
   if (header) {
     header.innerHTML = `
+      <button class="chat-back-btn" onclick="goBackToContacts()" title="Volver a contactos">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"></polyline></svg>
+      </button>
       <img src="${conv.avatar}" class="avatar-img" alt="${conv.name}" style="width:40px;height:40px;">
       <div>
         <h3 style="font-size:15px;font-weight:800;margin:0;">${conv.name}</h3>
@@ -2895,6 +4438,22 @@ function selectChat(chatId) {
   activeChatId = chatId;
   const conv = CONVERSATIONS.find(c => c.id === chatId);
   if (conv) conv.unreadCount = 0;
+  
+  const layout = document.querySelector('.chats-layout');
+  if (layout) {
+    layout.classList.add('show-chat-detail');
+  }
+
+  renderChatList();
+  renderActiveChat();
+}
+
+function goBackToContacts() {
+  const layout = document.querySelector('.chats-layout');
+  if (layout) {
+    layout.classList.remove('show-chat-detail');
+  }
+  activeChatId = null;
   renderChatList();
   renderActiveChat();
 }
@@ -3053,9 +4612,338 @@ function toggleModalFav() {
 }
 
 function simulateBookingProcess() {
+  startBookingFlow();
+}
+
+/* ================= BOOKING FLOW ENGINE ================= */
+
+let bookingState = {
+  step: 1,
+  date: null,
+  time: null,
+  calYear: null,
+  calMonth: null,
+  code: '',
+  item: null
+};
+
+const AVAILABLE_TIMES = [
+  '08:00 AM', '08:30 AM', '09:00 AM', '09:30 AM',
+  '10:00 AM', '10:30 AM', '11:00 AM', '11:30 AM',
+  '02:00 PM', '02:30 PM', '03:00 PM', '03:30 PM',
+  '04:00 PM', '04:30 PM', '05:00 PM', '05:30 PM',
+  '07:00 PM', '07:30 PM', '08:00 PM', '08:30 PM'
+];
+
+function startBookingFlow() {
+  const item = activeModalItem;
+  if (!item) return;
   closeModal();
-  showToast('🎉 ¡Reserva confirmada con éxito!');
-  switchTab('reservas');
+
+  const today = new Date();
+  bookingState = {
+    step: 1,
+    date: { year: today.getFullYear(), month: today.getMonth(), day: today.getDate() },
+    time: AVAILABLE_TIMES[0],
+    calYear: today.getFullYear(),
+    calMonth: today.getMonth(),
+    code: generateBookingCode(item.category || 'AGG'),
+    item: item
+  };
+
+  // Render service mini card
+  const cat = item.category || 'servicio';
+  document.getElementById('bookingServiceCard').innerHTML = `
+    <img src="${item.image || 'https://images.unsplash.com/photo-1622253692010-333f2da6031d?auto=format&fit=crop&w=200&q=80'}" alt="${item.title}">
+    <div class="booking-service-info">
+      <h3>${item.title}</h3>
+      <p>${item.subtitle || item.location || ''}</p>
+      <span class="bsi-cat">${cat}</span>
+    </div>
+  `;
+
+  // Reset form
+  document.getElementById('bookingName').value = 'Mauricio Morales';
+  document.getElementById('bookingPhone').value = '';
+  document.getElementById('bookingEmail').value = '';
+  document.getElementById('bookingNotes').value = '';
+  const cb = document.getElementById('bookingTerms');
+  if (cb) cb.checked = false;
+
+  renderBookingCalendar();
+  renderBookingTimeSlots();
+  goToBookingStep(1);
+
+  document.getElementById('bookingOverlay').classList.add('active');
+}
+
+function closeBookingFlow() {
+  document.getElementById('bookingOverlay').classList.remove('active');
+}
+
+function generateBookingCode(category) {
+  const prefixes = {
+    medicos: 'MED', restaurantes: 'RES', hospedajes: 'HOS',
+    belleza: 'BEL', odontologos: 'ODO', eventos: 'EVE',
+    inmobiliaria: 'INM'
+  };
+  const prefix = prefixes[category] || 'AGG';
+  const num = Math.floor(1000 + Math.random() * 9000);
+  return `${prefix}-${num}`;
+}
+
+function goToBookingStep(step) {
+  // Validation
+  if (step === 2 && (!bookingState.date || !bookingState.time)) {
+    showToast('Selecciona fecha y horario para continuar');
+    return;
+  }
+  if (step === 3) {
+    const name = document.getElementById('bookingName').value.trim();
+    const phone = document.getElementById('bookingPhone').value.trim();
+    const email = document.getElementById('bookingEmail').value.trim();
+    if (!name || !phone || !email) {
+      showToast('Completa todos los campos obligatorios');
+      return;
+    }
+    renderBookingSummary();
+  }
+
+  bookingState.step = step;
+  document.querySelectorAll('.booking-step').forEach(s => s.classList.remove('active'));
+  const target = document.getElementById(`bookingStep${step}`);
+  if (target) target.classList.add('active');
+
+  renderBookingProgress();
+
+  // Scroll to top of booking container
+  document.querySelector('.booking-container').scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function renderBookingProgress() {
+  const step = bookingState.step;
+  const labels = ['Fecha', 'Datos', 'Resumen', 'Listo'];
+  const container = document.getElementById('bookingProgress');
+
+  container.innerHTML = labels.map((label, i) => {
+    const num = i + 1;
+    const isActive = num === step;
+    const isDone = num < step;
+    const circleClass = isDone ? 'done' : (isActive ? 'active' : '');
+    const stepClass = isDone ? 'done' : (isActive ? 'active' : '');
+    const icon = isDone ? '✓' : num;
+    return `
+      <div class="bp-step ${stepClass}">
+        <div>
+          <div class="bp-circle ${circleClass}">${icon}</div>
+          <div class="bp-label">${label}</div>
+        </div>
+      </div>
+      ${num < 4 ? `<div class="bp-line ${isDone ? 'done' : ''}"></div>` : ''}
+    `;
+  }).join('');
+}
+
+function renderBookingCalendar() {
+  const year = bookingState.calYear;
+  const month = bookingState.calMonth;
+  const today = new Date();
+  const monthNames = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
+  const firstDay = new Date(year, month, 1).getDay(); // 0=Sun
+
+  let html = `
+    <div class="cal-header">
+      <button class="cal-nav-btn" onclick="changeBookingMonth(-1)">‹</button>
+      <span>${monthNames[month]} ${year}</span>
+      <button class="cal-nav-btn" onclick="changeBookingMonth(1)">›</button>
+    </div>
+    <div class="cal-weekdays">
+      <span>Do</span><span>Lu</span><span>Ma</span><span>Mi</span>
+      <span>Ju</span><span>Vi</span><span>Sá</span>
+    </div>
+    <div class="cal-days">
+  `;
+
+  // Empty cells for padding
+  for (let i = 0; i < firstDay; i++) {
+    html += '<button class="cal-day empty"></button>';
+  }
+
+  for (let d = 1; d <= daysInMonth; d++) {
+    const dateObj = new Date(year, month, d);
+    const isPast = dateObj < new Date(today.getFullYear(), today.getMonth(), today.getDate());
+    const isToday = d === today.getDate() && month === today.getMonth() && year === today.getFullYear();
+    const isSelected = bookingState.date && d === bookingState.date.day && month === bookingState.date.month && year === bookingState.date.year;
+
+    let cls = 'cal-day';
+    if (isPast) cls += ' disabled';
+    if (isToday) cls += ' today';
+    if (isSelected) cls += ' selected';
+
+    html += `<button class="${cls}" ${isPast ? 'disabled' : `onclick="selectBookingDate(${d})"`}>${d}</button>`;
+  }
+
+  html += '</div>';
+  document.getElementById('bookingCalendar').innerHTML = html;
+}
+
+function changeBookingMonth(dir) {
+  bookingState.calMonth += dir;
+  if (bookingState.calMonth > 11) { bookingState.calMonth = 0; bookingState.calYear++; }
+  if (bookingState.calMonth < 0) { bookingState.calMonth = 11; bookingState.calYear--; }
+  renderBookingCalendar();
+}
+
+function selectBookingDate(day) {
+  bookingState.date = { year: bookingState.calYear, month: bookingState.calMonth, day: day };
+  renderBookingCalendar();
+}
+
+function renderBookingTimeSlots() {
+  const container = document.getElementById('bookingTimeSlots');
+  container.innerHTML = AVAILABLE_TIMES.map(time => {
+    const isSelected = bookingState.time === time;
+    return `<button class="time-slot ${isSelected ? 'selected' : ''}" onclick="selectBookingTime('${time}')">${time}</button>`;
+  }).join('');
+}
+
+function selectBookingTime(time) {
+  bookingState.time = time;
+  renderBookingTimeSlots();
+}
+
+function renderBookingSummary() {
+  const item = bookingState.item;
+  const date = bookingState.date;
+  const monthNames = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+  const dayNames = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
+  const dateObj = new Date(date.year, date.month, date.day);
+  const dayName = dayNames[dateObj.getDay()];
+  const dateStr = `${dayName} ${date.day} de ${monthNames[date.month]}, ${date.year}`;
+
+  const name = document.getElementById('bookingName').value;
+  const phone = document.getElementById('bookingPhone').value;
+  const email = document.getElementById('bookingEmail').value;
+  const notes = document.getElementById('bookingNotes').value;
+  const cat = item.category || 'servicio';
+
+  document.getElementById('bookingSummary').innerHTML = `
+    <div class="booking-summary-header">
+      <img src="${item.image || 'https://images.unsplash.com/photo-1622253692010-333f2da6031d?auto=format&fit=crop&w=600&q=80'}" alt="${item.title}">
+      <span class="bsh-badge">${cat.toUpperCase()}</span>
+    </div>
+    <div class="booking-summary-body">
+      <h3>${item.title}</h3>
+      <div class="bsb-row"><span class="bsb-icon">📅</span><span class="bsb-label">Fecha</span><span class="bsb-value">${dateStr}</span></div>
+      <div class="bsb-row"><span class="bsb-icon">🕐</span><span class="bsb-label">Hora</span><span class="bsb-value">${bookingState.time}</span></div>
+      <div class="bsb-row"><span class="bsb-icon">📍</span><span class="bsb-label">Lugar</span><span class="bsb-value">${item.subtitle || item.location || 'Aggenda'}</span></div>
+      <div class="bsb-row"><span class="bsb-icon">👤</span><span class="bsb-label">Cliente</span><span class="bsb-value">${name}</span></div>
+      <div class="bsb-row"><span class="bsb-icon">📱</span><span class="bsb-label">Tel</span><span class="bsb-value">${phone}</span></div>
+      <div class="bsb-row"><span class="bsb-icon">📧</span><span class="bsb-label">Email</span><span class="bsb-value">${email}</span></div>
+      ${notes ? `<div class="bsb-row"><span class="bsb-icon">📝</span><span class="bsb-label">Notas</span><span class="bsb-value">${notes}</span></div>` : ''}
+    </div>
+  `;
+
+  document.getElementById('bookingCodeBox').innerHTML = `
+    <div>
+      <div class="code-label">Código de Reserva</div>
+      <div class="code-value">${bookingState.code}</div>
+    </div>
+  `;
+}
+
+function confirmBooking() {
+  const termsCheckbox = document.getElementById('bookingTerms');
+  if (!termsCheckbox.checked) {
+    showToast('Debes aceptar los términos y condiciones');
+    return;
+  }
+
+  const item = bookingState.item;
+  const date = bookingState.date;
+  const monthNames = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+  const dayNames = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
+  const dateObj = new Date(date.year, date.month, date.day);
+  const dayAbbr = dayNames[dateObj.getDay()];
+  const dateFormatted = `${date.year}-${String(date.month + 1).padStart(2, '0')}-${String(date.day).padStart(2, '0')}`;
+  const displayDate = `${dayAbbr} ${date.day} de ${monthNames[date.month]} - ${bookingState.time}`;
+
+  const catMap = {
+    medicos: { label: 'Médico', cls: 'cat-medico' },
+    restaurantes: { label: 'Restaurante', cls: 'cat-restaurante' },
+    hospedajes: { label: 'Hospedaje', cls: 'cat-hospedaje' },
+    belleza: { label: 'Belleza', cls: 'cat-belleza' },
+    odontologos: { label: 'Odontología', cls: 'cat-medico' },
+    eventos: { label: 'Evento', cls: 'cat-evento' },
+    inmobiliaria: { label: 'Inmobiliaria', cls: 'cat-inmobiliaria' }
+  };
+  const catInfo = catMap[item.category] || { label: 'Servicio', cls: 'cat-medico' };
+
+  // Add to RESERVATIONS
+  const newRes = {
+    id: `res-${Date.now()}`,
+    title: item.title,
+    provider: item.subtitle || item.title,
+    category: item.category || 'medicos',
+    categoryLabel: catInfo.label,
+    categoryClass: catInfo.cls,
+    date: dateFormatted,
+    time: bookingState.time,
+    displayDate: displayDate,
+    location: item.subtitle || item.location || 'Aggenda',
+    status: 'confirmada',
+    statusLabel: 'Confirmada',
+    image: item.image || 'https://images.unsplash.com/photo-1622253692010-333f2da6031d?auto=format&fit=crop&w=200&q=80',
+    code: bookingState.code
+  };
+  RESERVATIONS.unshift(newRes);
+  renderReservations();
+
+  // Show success
+  document.getElementById('bookingSuccess').innerHTML = `
+    <div class="success-circle">
+      <svg viewBox="0 0 24 24"><polyline points="6 12 10 16 18 8"></polyline></svg>
+    </div>
+    <h2 class="success-title">¡Reserva Confirmada!</h2>
+    <p class="success-subtitle">Tu cita con <b>${item.title}</b> ha sido agendada exitosamente. Recibirás una confirmación por WhatsApp y Email.</p>
+    <div class="success-code-card">
+      <div class="scc-label">Código de Confirmación</div>
+      <div class="scc-code">${bookingState.code}</div>
+      <div class="scc-qr">📱 Presenta este código al llegar</div>
+    </div>
+    <div class="success-actions">
+      <button class="booking-btn primary" onclick="closeBookingFlow(); switchTab('reservas');">📋 Ver Mis Reservas</button>
+      <button class="booking-btn secondary" onclick="closeBookingFlow(); openChatWithProvider('${(item.title || '').replace(/'/g, '')}');">💬 Contactar Prestador</button>
+      <button class="booking-btn secondary" onclick="closeBookingFlow()">Cerrar</button>
+    </div>
+  `;
+
+  goToBookingStep(4);
+  launchConfetti();
+}
+
+function launchConfetti() {
+  const container = document.createElement('div');
+  container.className = 'confetti-container';
+  document.body.appendChild(container);
+
+  const colors = ['#2563eb', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#ec4899', '#06b6d4'];
+
+  for (let i = 0; i < 60; i++) {
+    const piece = document.createElement('div');
+    piece.className = 'confetti-piece';
+    piece.style.left = Math.random() * 100 + '%';
+    piece.style.background = colors[Math.floor(Math.random() * colors.length)];
+    piece.style.width = (6 + Math.random() * 8) + 'px';
+    piece.style.height = (6 + Math.random() * 8) + 'px';
+    piece.style.animationDuration = (2 + Math.random() * 2) + 's';
+    piece.style.animationDelay = (Math.random() * 0.8) + 's';
+    piece.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
+    container.appendChild(piece);
+  }
+
+  setTimeout(() => container.remove(), 4500);
 }
 
 function openChatFromModal() {
@@ -3074,6 +4962,372 @@ function toggleTheme() {
   if (switchEl) switchEl.checked = (next === 'dark');
 
   showToast(`Modo ${next === 'dark' ? 'Oscuro 🌙' : 'Claro ☀️'} activado`);
+}
+
+/* ================= CATEGORY SEARCH & PROVIDERS ================= */
+
+const SUBCATEGORIES = {
+  medicos: [
+    { id: 'psicologo', name: 'Psicólogo', icon: '🧠' },
+    { id: 'pediatra', name: 'Pediatra', icon: '👶' },
+    { id: 'neurologo', name: 'Neurólogo', icon: '🧬' },
+    { id: 'ortopedista', name: 'Ortopedista', icon: '🦴' },
+    { id: 'cardiologo', name: 'Cardiólogo', icon: '❤️' },
+    { id: 'dermatologo', name: 'Dermatólogo', icon: '🩺' },
+    { id: 'ginecologo', name: 'Ginecólogo', icon: '🏥' }
+  ],
+  restaurantes: [
+    { id: 'italiana', name: 'Italiana', icon: '🍝' },
+    { id: 'peruana', name: 'Peruana', icon: '🥘' },
+    { id: 'oriental', name: 'Oriental', icon: '🍜' },
+    { id: 'colombiana', name: 'Colombiana', icon: '🫕' },
+    { id: 'mexicana', name: 'Mexicana', icon: '🌮' },
+    { id: 'francesa', name: 'Francesa', icon: '🥐' }
+  ],
+  hospedajes: [
+    { id: 'casa', name: 'Casa', icon: '🏠' },
+    { id: 'apartamento', name: 'Apartamento', icon: '🏢' },
+    { id: 'hotel', name: 'Hotel', icon: '🏨' },
+    { id: 'cabana', name: 'Cabaña', icon: '🛖' },
+    { id: 'villa', name: 'Villa', icon: '🏡' }
+  ],
+  belleza: [
+    { id: 'peluqueria', name: 'Peluquería', icon: '💇‍♀️' },
+    { id: 'spa', name: 'Spa', icon: '🧖‍♀️' },
+    { id: 'unas', name: 'Uñas', icon: '💅' },
+    { id: 'maquillaje', name: 'Maquillaje', icon: '💄' },
+    { id: 'barberia', name: 'Barbería', icon: '✂️' }
+  ],
+  odontologos: [
+    { id: 'ortodoncia', name: 'Ortodoncia', icon: '🦷' },
+    { id: 'estetica', name: 'Estética', icon: '✨' },
+    { id: 'endodoncia', name: 'Endodoncia', icon: '🔬' },
+    { id: 'general', name: 'General', icon: '🏥' }
+  ],
+  eventos: [
+    { id: 'deportes', name: 'Deportes', icon: '⚽' },
+    { id: 'conciertos', name: 'Conciertos', icon: '🎵' },
+    { id: 'teatro', name: 'Teatro', icon: '🎭' },
+    { id: 'conferencias', name: 'Conferencias', icon: '🎤' }
+  ],
+  inmobiliaria: [
+    { id: 'apartamentos', name: 'Apartamentos', icon: '🏢' },
+    { id: 'casas', name: 'Casas', icon: '🏠' },
+    { id: 'lotes', name: 'Lotes', icon: '📐' },
+    { id: 'comercial', name: 'Comercial', icon: '🏪' }
+  ]
+};
+
+const PROVIDERS_DATA = {
+  medicos: [
+    { name: 'Dra. Marcela Gómez F.', specialty: 'Psicólogo', location: 'Manizales - Colombia', phone: '3148904919', avatar: 'https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&w=300&q=80', rating: '0.0', reviews: '0', subcat: 'psicologo' },
+    { name: 'Dra. Carmenza González N', specialty: 'Psicólogo', location: 'Manizales - Colombia', phone: '314 8904919', avatar: 'https://images.unsplash.com/photo-1594824476967-48c8b964273f?auto=format&fit=crop&w=300&q=80', rating: '4.8', reviews: '12', subcat: 'psicologo' },
+    { name: 'Dr. Carlos Mendoza', specialty: 'Cardiólogo', location: 'Bogotá - Colombia', phone: '315 2204567', avatar: 'https://images.unsplash.com/photo-1622253692010-333f2da6031d?auto=format&fit=crop&w=300&q=80', rating: '4.9', reviews: '87', subcat: 'cardiologo' },
+    { name: 'Dr. Andrés Ramírez', specialty: 'Pediatra', location: 'Medellín - Colombia', phone: '310 5567890', avatar: 'https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?auto=format&fit=crop&w=300&q=80', rating: '4.7', reviews: '45', subcat: 'pediatra' },
+    { name: 'Dra. Laura Martínez', specialty: 'Neurólogo', location: 'Cali - Colombia', phone: '318 7728456', avatar: 'https://images.unsplash.com/photo-1527613426441-4da17471b66d?auto=format&fit=crop&w=300&q=80', rating: '4.9', reviews: '62', subcat: 'neurologo' },
+    { name: 'Dr. Julio Pérez', specialty: 'Ortopedista', location: 'Barranquilla - Colombia', phone: '312 9911234', avatar: 'https://images.unsplash.com/photo-1537368910025-700350fe46c7?auto=format&fit=crop&w=300&q=80', rating: '4.6', reviews: '33', subcat: 'ortopedista' },
+    { name: 'Dra. Sofía Herrera', specialty: 'Dermatólogo', location: 'Pereira - Colombia', phone: '317 4455678', avatar: 'https://images.unsplash.com/photo-1651008376811-b90baee60c1f?auto=format&fit=crop&w=300&q=80', rating: '4.8', reviews: '51', subcat: 'dermatologo' }
+  ],
+  restaurantes: [
+    { name: 'Maido', location: 'Miraflores - Peru', rating: '4.98', reviews: '1.260', image: 'https://images.unsplash.com/photo-1550966871-3ed3cdb5ed0c?auto=format&fit=crop&w=600&q=80', detail: 'A 18 km de distancia', hours: 'ABRE EN 1 HORA', subcat: 'peruana', type: 'image-card' },
+    { name: 'Osteria Francescana', location: 'Módena - Italia', rating: '4.95', reviews: '2.180', image: 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=600&q=80', detail: 'A 5 km de distancia', hours: 'ABIERTO', subcat: 'italiana', type: 'image-card' },
+    { name: 'Narisawa', location: 'Tokio - Japón', rating: '4.92', reviews: '890', image: 'https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=600&q=80', detail: 'A 32 km de distancia', hours: 'ABRE EN 3 HORAS', subcat: 'oriental', type: 'image-card' },
+    { name: 'Andrés Carne de Res', location: 'Chía - Colombia', rating: '4.85', reviews: '3.400', image: 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=600&q=80', detail: 'A 25 km de distancia', hours: 'ABIERTO', subcat: 'colombiana', type: 'image-card' },
+    { name: 'Pujol', location: 'CDMX - México', rating: '4.90', reviews: '1.800', image: 'https://images.unsplash.com/photo-1559339352-11d035aa65de?auto=format&fit=crop&w=600&q=80', detail: 'A 12 km de distancia', hours: 'ABIERTO', subcat: 'mexicana', type: 'image-card' }
+  ],
+  hospedajes: [
+    { name: 'Ellerman House', location: 'Cape Town - Sudáfrica', rating: '4.98', reviews: '1.260', image: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=600&q=80', detail: 'Luminosa y con luz natural, esta acogedora...', rooms: '1 Habitación - 1 Cama', price: '$850.000 COP/Noche', subcat: 'hotel', type: 'image-card' },
+    { name: 'Villa del Lago', location: 'Guatapé - Colombia', rating: '4.85', reviews: '320', image: 'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=600&q=80', detail: 'Espectacular vista al embalse...', rooms: '3 Habitaciones - 2 Baños', price: '$450.000 COP/Noche', subcat: 'casa', type: 'image-card' },
+    { name: 'Sky Loft Poblado', location: 'Medellín - Colombia', rating: '4.90', reviews: '180', image: 'https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=600&q=80', detail: 'Moderno apartamento con vistas panorámicas...', rooms: '2 Habitaciones - 1 Cama King', price: '$380.000 COP/Noche', subcat: 'apartamento', type: 'image-card' },
+    { name: 'Cabaña Bosque de Niebla', location: 'Salento - Colombia', rating: '4.92', reviews: '95', image: 'https://images.unsplash.com/photo-1449158743715-0a90ebb6d2d8?auto=format&fit=crop&w=600&q=80', detail: 'Refugio en medio del bosque cafetero...', rooms: '1 Habitación - Chimenea', price: '$320.000 COP/Noche', subcat: 'cabana', type: 'image-card' },
+    { name: 'Villa Amanecer', location: 'Cartagena - Colombia', rating: '4.95', reviews: '210', image: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=600&q=80', detail: 'Villa frente al mar con piscina privada...', rooms: '4 Habitaciones - 5 Baños', price: '$1.200.000 COP/Noche', subcat: 'villa', type: 'image-card' }
+  ],
+  belleza: [
+    { name: 'Studio Glamour', specialty: 'Peluquería & Estilismo', location: 'Bogotá - Colombia', phone: '315 2209876', avatar: 'https://images.unsplash.com/photo-1560066984-138dadb4c035?auto=format&fit=crop&w=300&q=80', rating: '4.8', reviews: '120', subcat: 'peluqueria' },
+    { name: 'Zen Spa Premium', specialty: 'Spa & Wellness', location: 'Medellín - Colombia', phone: '310 4456789', avatar: 'https://images.unsplash.com/photo-1544161515-4ab6ce6db874?auto=format&fit=crop&w=300&q=80', rating: '4.9', reviews: '85', subcat: 'spa' },
+    { name: 'Nails Art Studio', specialty: 'Uñas & Nail Art', location: 'Cali - Colombia', phone: '318 3345678', avatar: 'https://images.unsplash.com/photo-1604654894610-df63bc536371?auto=format&fit=crop&w=300&q=80', rating: '4.7', reviews: '67', subcat: 'unas' },
+    { name: 'Barber Kings', specialty: 'Barbería Premium', location: 'Manizales - Colombia', phone: '312 8876543', avatar: 'https://images.unsplash.com/photo-1503951914875-452f35780e85?auto=format&fit=crop&w=300&q=80', rating: '4.9', reviews: '142', subcat: 'barberia' }
+  ],
+  odontologos: [
+    { name: 'Dra. Andrea Ruiz', specialty: 'Ortodoncia', location: 'Bogotá - Colombia', phone: '315 7789012', avatar: 'https://images.unsplash.com/photo-1588776814546-1ffcf47267a5?auto=format&fit=crop&w=300&q=80', rating: '4.9', reviews: '78', subcat: 'ortodoncia' },
+    { name: 'Dr. Felipe Torres', specialty: 'Estética Dental', location: 'Medellín - Colombia', phone: '310 2234567', avatar: 'https://images.unsplash.com/photo-1606811971618-4486d14f3f99?auto=format&fit=crop&w=300&q=80', rating: '4.8', reviews: '56', subcat: 'estetica' },
+    { name: 'Dra. María Salazar', specialty: 'Endodoncia', location: 'Cali - Colombia', phone: '318 9912345', avatar: 'https://images.unsplash.com/photo-1629909613654-28e377c37b09?auto=format&fit=crop&w=300&q=80', rating: '4.7', reviews: '42', subcat: 'endodoncia' }
+  ],
+  eventos: [
+    { name: 'Usyk vs Dubois II', location: 'Wembley - Londres', rating: '5.0', reviews: '1.2k', image: 'https://images.unsplash.com/photo-1517649763962-0c623266010b?auto=format&fit=crop&w=600&q=80', detail: 'Campeonato Mundial Pesos Pesados', hours: 'Sáb 25 Sep - 7:00 PM', price: 'Desde $180 USD', subcat: 'deportes', type: 'image-card' },
+    { name: 'Coldplay World Tour', location: 'Estadio Olímpico', rating: '5.0', reviews: '3.4k', image: 'https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?auto=format&fit=crop&w=600&q=80', detail: 'Music of the Spheres', hours: 'Dom 10 Oct - 6:00 PM', price: 'Desde $140 USD', subcat: 'conciertos', type: 'image-card' },
+    { name: 'Cirque du Soleil: KÀ', location: 'MGM Grand - Las Vegas', rating: '4.9', reviews: '890', image: 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?auto=format&fit=crop&w=600&q=80', detail: 'Show acrobático inmersivo', hours: 'Todos los viernes 8PM', price: 'Desde $110 USD', subcat: 'teatro', type: 'image-card' }
+  ],
+  inmobiliaria: [
+    { name: 'The Reserve Pent-houses', location: 'Distrito Financiero VIP', rating: '4.95', reviews: '85', image: 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=600&q=80', detail: 'Torres residenciales con helipuerto', rooms: 'Desde 120 m² - 3 Alcobas', price: 'Desde $450,000 USD', subcat: 'apartamentos', type: 'image-card' },
+    { name: 'Ocean Sky Towers', location: 'Cartagena de Indias', rating: '4.9', reviews: '62', image: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=600&q=80', detail: 'Marina privada y muelle para yates', rooms: 'Desde 95 m² - 2 Alcobas', price: 'Desde $320,000 USD', subcat: 'apartamentos', type: 'image-card' },
+    { name: 'Horizon Eco Villas', location: 'Valle del Bravo', rating: '5.0', reviews: '40', image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=600&q=80', detail: 'Paneles solares y huertos orgánicos', rooms: 'Desde 250 m² - Lote 1000 m²', price: 'Desde $680,000 USD', subcat: 'casas', type: 'image-card' }
+  ]
+};
+
+let currentProviderCategory = '';
+let currentSubcategoryFilter = 'all';
+
+function openCategorySearch() {
+  const overlay = document.getElementById('categorySearchOverlay');
+  const panel = document.getElementById('categorySearchPanel');
+  const grid = document.getElementById('catSearchGrid');
+  
+  grid.innerHTML = CATEGORIES.map(cat => `
+    <div class="cat-search-item" onclick="closeCategorySearch(); showCategoryProviders('${cat.id}')">
+      <div class="cat-search-emoji ${cat.colorClass}">${cat.icon}</div>
+      <span class="cat-search-item-label">${cat.name}</span>
+    </div>
+  `).join('');
+
+  overlay.classList.add('active');
+  panel.classList.add('active');
+  
+  setTimeout(() => {
+    document.getElementById('catSearchInput').focus();
+  }, 350);
+}
+
+function closeCategorySearch() {
+  document.getElementById('categorySearchOverlay').classList.remove('active');
+  document.getElementById('categorySearchPanel').classList.remove('active');
+  document.getElementById('catSearchInput').value = '';
+}
+
+function filterCategorySearch(query) {
+  const grid = document.getElementById('catSearchGrid');
+  const filtered = CATEGORIES.filter(cat =>
+    cat.name.toLowerCase().includes(query.toLowerCase())
+  );
+  grid.innerHTML = filtered.map(cat => `
+    <div class="cat-search-item" onclick="closeCategorySearch(); showCategoryProviders('${cat.id}')">
+      <div class="cat-search-emoji ${cat.colorClass}">${cat.icon}</div>
+      <span class="cat-search-item-label">${cat.name}</span>
+    </div>
+  `).join('');
+}
+
+function showCategoryProviders(categoryId) {
+  currentProviderCategory = categoryId;
+  currentSubcategoryFilter = 'all';
+  
+  if (categoryId !== 'all') {
+    const category = CATEGORIES.find(c => c.id === categoryId);
+    if (!category) return;
+  }
+
+  // Update search placeholder based on category
+  const nameSearch = document.getElementById('providersNameSearch');
+  const placeholders = {
+    medicos: 'Busca por Nombre y/o Apellido',
+    restaurantes: 'Busca por nombre del Restaurante',
+    hospedajes: 'Ingresa un destino',
+    belleza: 'Busca por Nombre del Salón',
+    odontologos: 'Busca por Nombre y/o Apellido',
+    eventos: 'Busca un evento',
+    inmobiliaria: 'Busca un proyecto'
+  };
+  nameSearch.placeholder = placeholders[categoryId] || 'Busca en todos los servicios...';
+  nameSearch.value = '';
+
+  renderSubcategories(categoryId);
+  renderProvidersList(categoryId, 'all');
+
+  document.getElementById('providersViewOverlay').classList.add('active');
+}
+
+function closeProvidersView() {
+  document.getElementById('providersViewOverlay').classList.remove('active');
+}
+
+function renderSubcategories(categoryId) {
+  const container = document.getElementById('providersSubcategories');
+  const subcats = categoryId === 'all'
+    ? CATEGORIES.map(c => ({ id: c.id, name: c.name, icon: c.icon }))
+    : (SUBCATEGORIES[categoryId] || []);
+
+  const isTodosActive = currentSubcategoryFilter === 'all';
+  let html = `
+    <div class="subcat-item ${isTodosActive ? 'active' : ''}" onclick="filterBySubcategory('all')">
+      <div class="subcat-icon" style="background:var(--bg-surface);border-color:${isTodosActive ? 'var(--text-main)' : 'var(--border-color)'}">
+        🗂️
+      </div>
+      <span class="subcat-label">Todos</span>
+    </div>
+  `;
+
+  html += subcats.map(sub => `
+    <div class="subcat-item ${currentSubcategoryFilter === sub.id ? 'active' : ''}" onclick="filterBySubcategory('${sub.id}')">
+      <div class="subcat-icon" style="background:var(--bg-surface);border-color:${currentSubcategoryFilter === sub.id ? 'var(--text-main)' : 'var(--border-color)'}">
+        ${sub.icon}
+      </div>
+      <span class="subcat-label">${sub.name}</span>
+    </div>
+  `).join('');
+
+  container.innerHTML = html;
+}
+
+function filterBySubcategory(subcatId) {
+  if (subcatId === 'all') {
+    currentSubcategoryFilter = 'all';
+  } else {
+    currentSubcategoryFilter = currentSubcategoryFilter === subcatId ? 'all' : subcatId;
+  }
+  renderSubcategories(currentProviderCategory);
+  renderProvidersList(currentProviderCategory, currentSubcategoryFilter);
+}
+
+function filterProvidersByName(query) {
+  renderProvidersList(currentProviderCategory, currentSubcategoryFilter, query);
+}
+
+function renderProvidersList(categoryId, subcatFilter, nameQuery = '') {
+  const container = document.getElementById('providersList');
+  let providers = [];
+
+  if (categoryId === 'all') {
+    Object.keys(PROVIDERS_DATA).forEach(cat => {
+      if (subcatFilter === 'all' || subcatFilter === cat) {
+        const tagged = PROVIDERS_DATA[cat].map(p => ({ ...p, categoryId: cat }));
+        providers = providers.concat(tagged);
+      }
+    });
+  } else {
+    providers = (PROVIDERS_DATA[categoryId] || []).map(p => ({ ...p, categoryId }));
+    if (subcatFilter && subcatFilter !== 'all') {
+      providers = providers.filter(p => p.subcat === subcatFilter);
+    }
+  }
+
+  if (nameQuery.trim().length > 0) {
+    const q = nameQuery.toLowerCase();
+    providers = providers.filter(p => 
+      p.name.toLowerCase().includes(q) ||
+      (p.specialty && p.specialty.toLowerCase().includes(q)) ||
+      p.location.toLowerCase().includes(q)
+    );
+  }
+
+  if (providers.length === 0) {
+    container.innerHTML = `<div style="padding:40px 20px;text-align:center;color:var(--text-muted);">
+      <p style="font-size:32px;margin-bottom:8px;">🔍</p>
+      <p style="font-weight:600;">No se encontraron resultados</p>
+      <p style="font-size:13px;">Intenta con otro término de búsqueda</p>
+    </div>`;
+    return;
+  }
+
+  container.innerHTML = providers.map(provider => {
+    if (provider.type === 'image-card') {
+      return renderImageProviderCard(provider, provider.categoryId);
+    } else {
+      return renderAvatarProviderCard(provider, provider.categoryId);
+    }
+  }).join('');
+}
+
+function openProviderModal(categoryId, providerName) {
+  let provider = null;
+  let actualCategory = categoryId;
+
+  if (!categoryId || categoryId === 'all') {
+    for (const cat in PROVIDERS_DATA) {
+      provider = PROVIDERS_DATA[cat].find(p => p.name === providerName);
+      if (provider) {
+        actualCategory = cat;
+        break;
+      }
+    }
+  } else {
+    provider = (PROVIDERS_DATA[categoryId] || []).find(p => p.name === providerName);
+  }
+
+  if (!provider) return;
+
+  const item = {
+    id: provider.name,
+    title: provider.name,
+    subtitle: provider.specialty || provider.location,
+    location: provider.location,
+    category: actualCategory,
+    rating: provider.rating ? `${provider.rating} ★ (${provider.reviews || '0'})` : '4.9 ★',
+    price: provider.price || 'N/A',
+    description: provider.detail || provider.hours || provider.rooms || `Servicio profesional de la categoría ${actualCategory.toUpperCase()} destacado en la plataforma Aggenda.`,
+    image: provider.image || provider.avatar || 'https://images.unsplash.com/photo-1622253692010-333f2da6031d?auto=format&fit=crop&w=600&q=80'
+  };
+  openModal(item);
+}
+
+function renderAvatarProviderCard(p, categoryId) {
+  const cat = categoryId || p.categoryId || 'all';
+  return `
+    <div class="provider-card">
+      <div class="provider-card-body">
+        <div class="provider-card-top">
+          <img src="${p.avatar}" alt="${p.name}" class="provider-avatar">
+          <div class="provider-info">
+            <h3 class="provider-name">${p.name}</h3>
+            <p class="provider-specialty">${p.specialty}</p>
+            <p class="provider-location">${p.location}</p>
+            <p class="provider-phone">${p.phone}</p>
+            <button class="provider-see-more" onclick="openProviderModal('${cat}', '${p.name.replace(/'/g, "\\'")}')">
+              Ver Más
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="provider-card-footer">
+        <div class="provider-rating">
+          <span class="star">★</span> ${p.rating} (${p.reviews})
+        </div>
+        <div class="provider-footer-actions">
+          <button class="provider-icon-btn" onclick="showToast('Videollamada con ${p.name.replace(/'/g, '')}')">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="23 7 16 12 23 17 23 7"></polygon><rect x="1" y="5" width="15" height="14" rx="2" ry="2"></rect></svg>
+          </button>
+          <button class="provider-icon-btn" onclick="showToast('Guardado en favoritos')">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+          </button>
+          <button class="provider-book-btn" onclick="openProviderModal('${cat}', '${p.name.replace(/'/g, "\\'")}')">
+            AGENDAR
+          </button>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function renderImageProviderCard(p, categoryId) {
+  const cat = categoryId || p.categoryId || 'all';
+  return `
+    <div class="provider-card image-card">
+      <img src="${p.image}" alt="${p.name}" class="provider-card-image">
+      <div class="provider-card-body">
+        <div class="provider-card-info-row">
+          <h3 class="provider-card-title">${p.name}</h3>
+          <div class="provider-card-rating">
+            <span class="star">★</span> ${p.rating} (${p.reviews})
+            <button class="provider-icon-btn" style="margin-left:4px;" onclick="event.stopPropagation(); showToast('Guardado en favoritos')">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+            </button>
+          </div>
+        </div>
+        <p class="provider-card-location-text">${p.location}</p>
+        ${p.detail ? `<p class="provider-card-detail">${p.detail}</p>` : ''}
+        ${p.hours ? `<p class="provider-card-detail">${p.hours}</p>` : ''}
+        ${p.rooms ? `<p class="provider-card-detail">${p.rooms}</p>` : ''}
+        ${p.price ? `<p class="provider-card-price">${p.price}</p>` : ''}
+        <div class="provider-card-footer-row">
+          <button class="provider-see-more" style="background:var(--border-color); color:var(--text-main); margin-top:0;" onclick="openProviderModal('${cat}', '${p.name.replace(/'/g, "\\'")}')">
+            Ver Más
+          </button>
+          <button class="provider-card-reserve-btn" onclick="openProviderModal('${cat}', '${p.name.replace(/'/g, "\\'")}')">
+            RESERVAR
+          </button>
+        </div>
+      </div>
+    </div>
+  `;
 }
 
 function handleGlobalSearch(query) {

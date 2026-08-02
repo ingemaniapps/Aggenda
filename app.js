@@ -336,6 +336,7 @@ let CONVERSATIONS = [
     avatar: 'https://images.unsplash.com/photo-1622253692010-333f2da6031d?auto=format&fit=crop&w=200&q=80',
     categoryTag: 'Médico',
     categoryClass: 'med',
+    city: 'Bogotá',
     unreadCount: 1,
     time: '10:45 AM',
     serviceTitle: 'Cita Médica - Sáb 2 Ago 09:30 AM',
@@ -352,6 +353,7 @@ let CONVERSATIONS = [
     avatar: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=200&q=80',
     categoryTag: 'Hospedaje',
     categoryClass: 'hotel',
+    city: 'Cape Town',
     unreadCount: 1,
     time: 'Ayer',
     serviceTitle: 'Reserva Ocean Suite - 10 Septiembre',
@@ -366,12 +368,60 @@ let CONVERSATIONS = [
     avatar: 'https://images.unsplash.com/photo-1559339352-11d035aa65de?auto=format&fit=crop&w=200&q=80',
     categoryTag: 'Restaurante',
     categoryClass: 'rest',
+    city: 'Barcelona',
     unreadCount: 0,
     time: '24 Jul',
     serviceTitle: 'Mesa Tasting Menu - 14 Agosto',
     messages: [
       { sender: 'user', text: 'Hola, quisiéramos solicitar una copa de bienvenida de champagne para la celebración de aniversario.', time: '24 Jul' },
       { sender: 'provider', text: 'Con todo gusto Sr. Morales, lo tenemos anotado en sus notas especiales de mesa.', time: '24 Jul' }
+    ]
+  },
+  {
+    id: 'chat-4',
+    name: 'Dra. Carmenza González N',
+    role: 'Médico Psicólogo',
+    avatar: 'https://images.unsplash.com/photo-1594824476967-48c8b964273f?auto=format&fit=crop&w=200&q=80',
+    categoryTag: 'Médico',
+    categoryClass: 'med',
+    city: 'Manizales',
+    unreadCount: 0,
+    time: '22 Jul',
+    serviceTitle: 'Consulta de Terapia de Pareja',
+    messages: [
+      { sender: 'provider', text: 'Hola Mauricio, ¿cómo has estado? Te escribo para confirmar si asistirán a la sesión de este miércoles.', time: '22 Jul' },
+      { sender: 'user', text: 'Hola Dra., sí, por supuesto. Estaremos puntuales a las 4:00 PM.', time: '22 Jul' }
+    ]
+  },
+  {
+    id: 'chat-5',
+    name: 'Studio Glamour',
+    role: 'Peluquería & Estilismo',
+    avatar: 'https://images.unsplash.com/photo-1560066984-138dadb4c035?auto=format&fit=crop&w=200&q=80',
+    categoryTag: 'Belleza',
+    categoryClass: 'beauty',
+    city: 'Bogotá',
+    unreadCount: 0,
+    time: '18 Jul',
+    serviceTitle: 'Corte y Tinte de Cabello',
+    messages: [
+      { sender: 'user', text: 'Hola, me gustaría saber si tienen disponibilidad para mañana en la tarde.', time: '18 Jul' },
+      { sender: 'provider', text: 'Hola Mauricio, sí tenemos espacio a las 3:00 PM y a las 5:30 PM. ¿Cuál prefieres?', time: '18 Jul' }
+    ]
+  },
+  {
+    id: 'chat-6',
+    name: 'Cabaña Bosque de Niebla',
+    role: 'Hospedaje Cabaña',
+    avatar: 'https://images.unsplash.com/photo-1449158743715-0a90ebb6d2d8?auto=format&fit=crop&w=200&q=80',
+    categoryTag: 'Hospedaje',
+    categoryClass: 'hotel',
+    city: 'Salento',
+    unreadCount: 0,
+    time: '15 Jul',
+    serviceTitle: 'Alquiler de Cabaña de Campo',
+    messages: [
+      { sender: 'provider', text: 'Hola Mauricio, te enviamos las indicaciones de llegada para la cabaña. El clima está algo frío, te recomendamos traer abrigo.', time: '15 Jul' }
     ]
   }
 ];
@@ -380,7 +430,7 @@ let CONVERSATIONS = [
 let activeTab = 'inicio';
 let currentSlideIndex = 0;
 let slideInterval = null;
-let activeChatId = 'chat-1';
+let activeChatId = null;
 let activeModalItem = null;
 
 // --- INITIALIZATION ---
@@ -412,6 +462,16 @@ function switchTab(tabId) {
       item.classList.add('active');
     }
   });
+
+  if (tabId === 'chats') {
+    const layout = document.querySelector('.chats-layout');
+    if (layout) {
+      layout.classList.remove('show-chat-detail');
+    }
+    activeChatId = null;
+    renderChatList();
+    renderActiveChat();
+  }
 
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
@@ -514,7 +574,7 @@ function renderCategories() {
 }
 
 function filterCategory(catId) {
-  showToast(`Filtrando categoría: ${catId.toUpperCase()}`);
+  showCategoryProviders(catId);
 }
 
 // --- REPEATING GROUPS RENDER ---
@@ -646,6 +706,9 @@ function renderChatList() {
           <span class="conv-name">${c.name}</span>
           <span class="conv-time">${c.time}</span>
         </div>
+        <div class="conv-meta" style="font-size:11.5px;color:var(--text-muted);margin-bottom:2px;font-weight:600;">
+          <span style="color:var(--text-main);">${c.categoryTag}</span> • <span>${c.city}</span>
+        </div>
         <div class="conv-msg">${c.messages[c.messages.length - 1].text}</div>
       </div>
       ${c.unreadCount > 0 ? `<span class="conv-badge">${c.unreadCount}</span>` : ''}
@@ -654,13 +717,52 @@ function renderChatList() {
 }
 
 function renderActiveChat() {
+  const detailPanel = document.getElementById('chatDetailPanel');
+  if (!detailPanel) return;
+
   const conv = CONVERSATIONS.find(c => c.id === activeChatId);
-  if (!conv) return;
+
+  if (!conv) {
+    detailPanel.innerHTML = `
+      <div class="chat-empty-state">
+        <div style="font-size:48px;margin-bottom:16px;">💬</div>
+        <h3 style="font-size:18px;font-weight:800;color:var(--text-main);margin-bottom:8px;">Tus Mensajes</h3>
+        <p style="font-size:13.5px;max-width:280px;line-height:1.4;">Selecciona un contacto de la lista para ver su información y abrir la conversación.</p>
+      </div>
+    `;
+    return;
+  }
+
+  // Restore details layout structure if it was empty state
+  if (detailPanel.querySelector('.chat-empty-state')) {
+    detailPanel.innerHTML = `
+      <div class="active-chat-header" id="activeChatHeader"></div>
+      <div class="service-context-banner" id="serviceContextBanner"></div>
+      <div class="chat-messages-body" id="chatMessagesBody"></div>
+      <div class="quick-replies-bar" id="quickRepliesBar">
+        <button class="quick-chip" onclick="sendQuickReply('¿Cuáles son los requisitos de llegada?')">📋 Requisitos de llegada</button>
+        <button class="quick-chip" onclick="sendQuickReply('¿Puedo modificar la hora de mi reserva?')">⏰ Modificar hora</button>
+        <button class="quick-chip" onclick="sendQuickReply('Solicitar ubicación exacta y parqueadero')">📍 Ubicación / Parqueadero</button>
+      </div>
+      <div class="chat-input-footer">
+        <button class="attach-btn" onclick="simulateAttachment()" title="Adjuntar documento">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"></path></svg>
+        </button>
+        <input type="text" id="chatTextInput" placeholder="Escribe un mensaje al prestador..." onkeydown="handleChatKeyDown(event)">
+        <button class="send-btn" onclick="sendChatMessage()">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+        </button>
+      </div>
+    `;
+  }
 
   // Update header
   const header = document.getElementById('activeChatHeader');
   if (header) {
     header.innerHTML = `
+      <button class="chat-back-btn" onclick="goBackToContacts()" title="Volver a contactos">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"></polyline></svg>
+      </button>
       <img src="${conv.avatar}" class="avatar-img" alt="${conv.name}" style="width:40px;height:40px;">
       <div>
         <h3 style="font-size:15px;font-weight:800;margin:0;">${conv.name}</h3>
@@ -695,6 +797,22 @@ function selectChat(chatId) {
   activeChatId = chatId;
   const conv = CONVERSATIONS.find(c => c.id === chatId);
   if (conv) conv.unreadCount = 0;
+
+  const layout = document.querySelector('.chats-layout');
+  if (layout) {
+    layout.classList.add('show-chat-detail');
+  }
+
+  renderChatList();
+  renderActiveChat();
+}
+
+function goBackToContacts() {
+  const layout = document.querySelector('.chats-layout');
+  if (layout) {
+    layout.classList.remove('show-chat-detail');
+  }
+  activeChatId = null;
   renderChatList();
   renderActiveChat();
 }
@@ -854,11 +972,339 @@ function toggleModalFav() {
     document.getElementById('modalFavBtn').classList.toggle('active', isFav);
   }
 }
-
 function simulateBookingProcess() {
+  startBookingFlow();
+}
+
+/* ================= BOOKING FLOW ENGINE ================= */
+
+let bookingState = {
+  step: 1,
+  date: null,
+  time: null,
+  calYear: null,
+  calMonth: null,
+  code: '',
+  item: null
+};
+
+const AVAILABLE_TIMES = [
+  '08:00 AM', '08:30 AM', '09:00 AM', '09:30 AM',
+  '10:00 AM', '10:30 AM', '11:00 AM', '11:30 AM',
+  '02:00 PM', '02:30 PM', '03:00 PM', '03:30 PM',
+  '04:00 PM', '04:30 PM', '05:00 PM', '05:30 PM',
+  '07:00 PM', '07:30 PM', '08:00 PM', '08:30 PM'
+];
+
+function startBookingFlow() {
+  const item = activeModalItem;
+  if (!item) return;
   closeModal();
-  showToast('🎉 ¡Reserva confirmada con éxito!');
-  switchTab('reservas');
+
+  const today = new Date();
+  bookingState = {
+    step: 1,
+    date: { year: today.getFullYear(), month: today.getMonth(), day: today.getDate() },
+    time: AVAILABLE_TIMES[0],
+    calYear: today.getFullYear(),
+    calMonth: today.getMonth(),
+    code: generateBookingCode(item.category || 'AGG'),
+    item: item
+  };
+
+  // Render service mini card
+  const cat = item.category || 'servicio';
+  document.getElementById('bookingServiceCard').innerHTML = `
+    <img src="${item.image || 'https://images.unsplash.com/photo-1622253692010-333f2da6031d?auto=format&fit=crop&w=200&q=80'}" alt="${item.title}">
+    <div class="booking-service-info">
+      <h3>${item.title}</h3>
+      <p>${item.subtitle || item.location || ''}</p>
+      <span class="bsi-cat">${cat}</span>
+    </div>
+  `;
+
+  // Reset form
+  document.getElementById('bookingName').value = 'Mauricio Morales';
+  document.getElementById('bookingPhone').value = '';
+  document.getElementById('bookingEmail').value = '';
+  document.getElementById('bookingNotes').value = '';
+  const cb = document.getElementById('bookingTerms');
+  if (cb) cb.checked = false;
+
+  renderBookingCalendar();
+  renderBookingTimeSlots();
+  goToBookingStep(1);
+
+  document.getElementById('bookingOverlay').classList.add('active');
+}
+
+function closeBookingFlow() {
+  document.getElementById('bookingOverlay').classList.remove('active');
+}
+
+function generateBookingCode(category) {
+  const prefixes = {
+    medicos: 'MED', restaurantes: 'RES', hospedajes: 'HOS',
+    belleza: 'BEL', odontologos: 'ODO', eventos: 'EVE',
+    inmobiliaria: 'INM'
+  };
+  const prefix = prefixes[category] || 'AGG';
+  const num = Math.floor(1000 + Math.random() * 9000);
+  return `${prefix}-${num}`;
+}
+
+function goToBookingStep(step) {
+  // Validation
+  if (step === 2 && (!bookingState.date || !bookingState.time)) {
+    showToast('Selecciona fecha y horario para continuar');
+    return;
+  }
+  if (step === 3) {
+    const name = document.getElementById('bookingName').value.trim();
+    const phone = document.getElementById('bookingPhone').value.trim();
+    const email = document.getElementById('bookingEmail').value.trim();
+    if (!name || !phone || !email) {
+      showToast('Completa todos los campos obligatorios');
+      return;
+    }
+    renderBookingSummary();
+  }
+
+  bookingState.step = step;
+  document.querySelectorAll('.booking-step').forEach(s => s.classList.remove('active'));
+  const target = document.getElementById(`bookingStep${step}`);
+  if (target) target.classList.add('active');
+
+  renderBookingProgress();
+
+  // Scroll to top of booking container
+  document.querySelector('.booking-container').scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function renderBookingProgress() {
+  const step = bookingState.step;
+  const labels = ['Fecha', 'Datos', 'Resumen', 'Listo'];
+  const container = document.getElementById('bookingProgress');
+
+  container.innerHTML = labels.map((label, i) => {
+    const num = i + 1;
+    const isActive = num === step;
+    const isDone = num < step;
+    const circleClass = isDone ? 'done' : (isActive ? 'active' : '');
+    const stepClass = isDone ? 'done' : (isActive ? 'active' : '');
+    const icon = isDone ? '✓' : num;
+    return `
+      <div class="bp-step ${stepClass}">
+        <div>
+          <div class="bp-circle ${circleClass}">${icon}</div>
+          <div class="bp-label">${label}</div>
+        </div>
+      </div>
+      ${num < 4 ? `<div class="bp-line ${isDone ? 'done' : ''}"></div>` : ''}
+    `;
+  }).join('');
+}
+
+function renderBookingCalendar() {
+  const year = bookingState.calYear;
+  const month = bookingState.calMonth;
+  const today = new Date();
+  const monthNames = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
+  const firstDay = new Date(year, month, 1).getDay(); // 0=Sun
+
+  let html = `
+    <div class="cal-header">
+      <button class="cal-nav-btn" onclick="changeBookingMonth(-1)">‹</button>
+      <span>${monthNames[month]} ${year}</span>
+      <button class="cal-nav-btn" onclick="changeBookingMonth(1)">›</button>
+    </div>
+    <div class="cal-weekdays">
+      <span>Do</span><span>Lu</span><span>Ma</span><span>Mi</span>
+      <span>Ju</span><span>Vi</span><span>Sá</span>
+    </div>
+    <div class="cal-days">
+  `;
+
+  // Empty cells for padding
+  for (let i = 0; i < firstDay; i++) {
+    html += '<button class="cal-day empty"></button>';
+  }
+
+  for (let d = 1; d <= daysInMonth; d++) {
+    const dateObj = new Date(year, month, d);
+    const isPast = dateObj < new Date(today.getFullYear(), today.getMonth(), today.getDate());
+    const isToday = d === today.getDate() && month === today.getMonth() && year === today.getFullYear();
+    const isSelected = bookingState.date && d === bookingState.date.day && month === bookingState.date.month && year === bookingState.date.year;
+
+    let cls = 'cal-day';
+    if (isPast) cls += ' disabled';
+    if (isToday) cls += ' today';
+    if (isSelected) cls += ' selected';
+
+    html += `<button class="${cls}" ${isPast ? 'disabled' : `onclick="selectBookingDate(${d})"`}>${d}</button>`;
+  }
+
+  html += '</div>';
+  document.getElementById('bookingCalendar').innerHTML = html;
+}
+
+function changeBookingMonth(dir) {
+  bookingState.calMonth += dir;
+  if (bookingState.calMonth > 11) { bookingState.calMonth = 0; bookingState.calYear++; }
+  if (bookingState.calMonth < 0) { bookingState.calMonth = 11; bookingState.calYear--; }
+  renderBookingCalendar();
+}
+
+function selectBookingDate(day) {
+  bookingState.date = { year: bookingState.calYear, month: bookingState.calMonth, day: day };
+  renderBookingCalendar();
+}
+
+function renderBookingTimeSlots() {
+  const container = document.getElementById('bookingTimeSlots');
+  container.innerHTML = AVAILABLE_TIMES.map(time => {
+    const isSelected = bookingState.time === time;
+    return `<button class="time-slot ${isSelected ? 'selected' : ''}" onclick="selectBookingTime('${time}')">${time}</button>`;
+  }).join('');
+}
+
+function selectBookingTime(time) {
+  bookingState.time = time;
+  renderBookingTimeSlots();
+}
+
+function renderBookingSummary() {
+  const item = bookingState.item;
+  const date = bookingState.date;
+  const monthNames = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+  const dayNames = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
+  const dateObj = new Date(date.year, date.month, date.day);
+  const dayName = dayNames[dateObj.getDay()];
+  const dateStr = `${dayName} ${date.day} de ${monthNames[date.month]}, ${date.year}`;
+
+  const name = document.getElementById('bookingName').value;
+  const phone = document.getElementById('bookingPhone').value;
+  const email = document.getElementById('bookingEmail').value;
+  const notes = document.getElementById('bookingNotes').value;
+  const cat = item.category || 'servicio';
+
+  document.getElementById('bookingSummary').innerHTML = `
+    <div class="booking-summary-header">
+      <img src="${item.image || 'https://images.unsplash.com/photo-1622253692010-333f2da6031d?auto=format&fit=crop&w=600&q=80'}" alt="${item.title}">
+      <span class="bsh-badge">${cat.toUpperCase()}</span>
+    </div>
+    <div class="booking-summary-body">
+      <h3>${item.title}</h3>
+      <div class="bsb-row"><span class="bsb-icon">📅</span><span class="bsb-label">Fecha</span><span class="bsb-value">${dateStr}</span></div>
+      <div class="bsb-row"><span class="bsb-icon">🕐</span><span class="bsb-label">Hora</span><span class="bsb-value">${bookingState.time}</span></div>
+      <div class="bsb-row"><span class="bsb-icon">📍</span><span class="bsb-label">Lugar</span><span class="bsb-value">${item.subtitle || item.location || 'Aggenda'}</span></div>
+      <div class="bsb-row"><span class="bsb-icon">👤</span><span class="bsb-label">Cliente</span><span class="bsb-value">${name}</span></div>
+      <div class="bsb-row"><span class="bsb-icon">📱</span><span class="bsb-label">Tel</span><span class="bsb-value">${phone}</span></div>
+      <div class="bsb-row"><span class="bsb-icon">📧</span><span class="bsb-label">Email</span><span class="bsb-value">${email}</span></div>
+      ${notes ? `<div class="bsb-row"><span class="bsb-icon">📝</span><span class="bsb-label">Notas</span><span class="bsb-value">${notes}</span></div>` : ''}
+    </div>
+  `;
+
+  document.getElementById('bookingCodeBox').innerHTML = `
+    <div>
+      <div class="code-label">Código de Reserva</div>
+      <div class="code-value">${bookingState.code}</div>
+    </div>
+  `;
+}
+
+function confirmBooking() {
+  const termsCheckbox = document.getElementById('bookingTerms');
+  if (!termsCheckbox.checked) {
+    showToast('Debes aceptar los términos y condiciones');
+    return;
+  }
+
+  const item = bookingState.item;
+  const date = bookingState.date;
+  const monthNames = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+  const dayNames = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
+  const dateObj = new Date(date.year, date.month, date.day);
+  const dayAbbr = dayNames[dateObj.getDay()];
+  const dateFormatted = `${date.year}-${String(date.month + 1).padStart(2, '0')}-${String(date.day).padStart(2, '0')}`;
+  const displayDate = `${dayAbbr} ${date.day} de ${monthNames[date.month]} - ${bookingState.time}`;
+
+  const catMap = {
+    medicos: { label: 'Médico', cls: 'cat-medico' },
+    restaurantes: { label: 'Restaurante', cls: 'cat-restaurante' },
+    hospedajes: { label: 'Hospedaje', cls: 'cat-hospedaje' },
+    belleza: { label: 'Belleza', cls: 'cat-belleza' },
+    odontologos: { label: 'Odontología', cls: 'cat-medico' },
+    eventos: { label: 'Evento', cls: 'cat-evento' },
+    inmobiliaria: { label: 'Inmobiliaria', cls: 'cat-inmobiliaria' }
+  };
+  const catInfo = catMap[item.category] || { label: 'Servicio', cls: 'cat-medico' };
+
+  // Add to RESERVATIONS
+  const newRes = {
+    id: `res-${Date.now()}`,
+    title: item.title,
+    provider: item.subtitle || item.title,
+    category: item.category || 'medicos',
+    categoryLabel: catInfo.label,
+    categoryClass: catInfo.cls,
+    date: dateFormatted,
+    time: bookingState.time,
+    displayDate: displayDate,
+    location: item.subtitle || item.location || 'Aggenda',
+    status: 'confirmada',
+    statusLabel: 'Confirmada',
+    image: item.image || 'https://images.unsplash.com/photo-1622253692010-333f2da6031d?auto=format&fit=crop&w=200&q=80',
+    code: bookingState.code
+  };
+  RESERVATIONS.unshift(newRes);
+  renderReservations();
+
+  // Show success
+  document.getElementById('bookingSuccess').innerHTML = `
+    <div class="success-circle">
+      <svg viewBox="0 0 24 24"><polyline points="6 12 10 16 18 8"></polyline></svg>
+    </div>
+    <h2 class="success-title">¡Reserva Confirmada!</h2>
+    <p class="success-subtitle">Tu cita con <b>${item.title}</b> ha sido agendada exitosamente. Recibirás una confirmación por WhatsApp y Email.</p>
+    <div class="success-code-card">
+      <div class="scc-label">Código de Confirmación</div>
+      <div class="scc-code">${bookingState.code}</div>
+      <div class="scc-qr">📱 Presenta este código al llegar</div>
+    </div>
+    <div class="success-actions">
+      <button class="booking-btn primary" onclick="closeBookingFlow(); switchTab('reservas');">📋 Ver Mis Reservas</button>
+      <button class="booking-btn secondary" onclick="closeBookingFlow(); openChatWithProvider('${(item.title || '').replace(/'/g, '')}');">💬 Contactar Prestador</button>
+      <button class="booking-btn secondary" onclick="closeBookingFlow()">Cerrar</button>
+    </div>
+  `;
+
+  goToBookingStep(4);
+  launchConfetti();
+}
+
+function launchConfetti() {
+  const container = document.createElement('div');
+  container.className = 'confetti-container';
+  document.body.appendChild(container);
+
+  const colors = ['#2563eb', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#ec4899', '#06b6d4'];
+
+  for (let i = 0; i < 60; i++) {
+    const piece = document.createElement('div');
+    piece.className = 'confetti-piece';
+    piece.style.left = Math.random() * 100 + '%';
+    piece.style.background = colors[Math.floor(Math.random() * colors.length)];
+    piece.style.width = (6 + Math.random() * 8) + 'px';
+    piece.style.height = (6 + Math.random() * 8) + 'px';
+    piece.style.animationDuration = (2 + Math.random() * 2) + 's';
+    piece.style.animationDelay = (Math.random() * 0.8) + 's';
+    piece.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
+    container.appendChild(piece);
+  }
+
+  setTimeout(() => container.remove(), 4500);
 }
 
 function openChatFromModal() {
@@ -866,6 +1312,372 @@ function openChatFromModal() {
   if (activeModalItem) {
     openChatWithProvider(activeModalItem.title);
   }
+}
+
+/* ================= CATEGORY SEARCH & PROVIDERS ================= */
+
+const SUBCATEGORIES = {
+  medicos: [
+    { id: 'psicologo', name: 'Psicólogo', icon: '🧠' },
+    { id: 'pediatra', name: 'Pediatra', icon: '👶' },
+    { id: 'neurologo', name: 'Neurólogo', icon: '🧬' },
+    { id: 'ortopedista', name: 'Ortopedista', icon: '🦴' },
+    { id: 'cardiologo', name: 'Cardiólogo', icon: '❤️' },
+    { id: 'dermatologo', name: 'Dermatólogo', icon: '🩺' },
+    { id: 'ginecologo', name: 'Ginecólogo', icon: '🏥' }
+  ],
+  restaurantes: [
+    { id: 'italiana', name: 'Italiana', icon: '🍝' },
+    { id: 'peruana', name: 'Peruana', icon: '🥘' },
+    { id: 'oriental', name: 'Oriental', icon: '🍜' },
+    { id: 'colombiana', name: 'Colombiana', icon: '🫕' },
+    { id: 'mexicana', name: 'Mexicana', icon: '🌮' },
+    { id: 'francesa', name: 'Francesa', icon: '🥐' }
+  ],
+  hospedajes: [
+    { id: 'casa', name: 'Casa', icon: '🏠' },
+    { id: 'apartamento', name: 'Apartamento', icon: '🏢' },
+    { id: 'hotel', name: 'Hotel', icon: '🏨' },
+    { id: 'cabana', name: 'Cabaña', icon: '🛖' },
+    { id: 'villa', name: 'Villa', icon: '🏡' }
+  ],
+  belleza: [
+    { id: 'peluqueria', name: 'Peluquería', icon: '💇‍♀️' },
+    { id: 'spa', name: 'Spa', icon: '🧖‍♀️' },
+    { id: 'unas', name: 'Uñas', icon: '💅' },
+    { id: 'maquillaje', name: 'Maquillaje', icon: '💄' },
+    { id: 'barberia', name: 'Barbería', icon: '✂️' }
+  ],
+  odontologos: [
+    { id: 'ortodoncia', name: 'Ortodoncia', icon: '🦷' },
+    { id: 'estetica', name: 'Estética', icon: '✨' },
+    { id: 'endodoncia', name: 'Endodoncia', icon: '🔬' },
+    { id: 'general', name: 'General', icon: '🏥' }
+  ],
+  eventos: [
+    { id: 'deportes', name: 'Deportes', icon: '⚽' },
+    { id: 'conciertos', name: 'Conciertos', icon: '🎵' },
+    { id: 'teatro', name: 'Teatro', icon: '🎭' },
+    { id: 'conferencias', name: 'Conferencias', icon: '🎤' }
+  ],
+  inmobiliaria: [
+    { id: 'apartamentos', name: 'Apartamentos', icon: '🏢' },
+    { id: 'casas', name: 'Casas', icon: '🏠' },
+    { id: 'lotes', name: 'Lotes', icon: '📐' },
+    { id: 'comercial', name: 'Comercial', icon: '🏪' }
+  ]
+};
+
+const PROVIDERS_DATA = {
+  medicos: [
+    { name: 'Dra. Marcela Gómez F.', specialty: 'Psicólogo', location: 'Manizales - Colombia', phone: '3148904919', avatar: 'https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&w=300&q=80', rating: '0.0', reviews: '0', subcat: 'psicologo' },
+    { name: 'Dra. Carmenza González N', specialty: 'Psicólogo', location: 'Manizales - Colombia', phone: '314 8904919', avatar: 'https://images.unsplash.com/photo-1594824476967-48c8b964273f?auto=format&fit=crop&w=300&q=80', rating: '4.8', reviews: '12', subcat: 'psicologo' },
+    { name: 'Dr. Carlos Mendoza', specialty: 'Cardiólogo', location: 'Bogotá - Colombia', phone: '315 2204567', avatar: 'https://images.unsplash.com/photo-1622253692010-333f2da6031d?auto=format&fit=crop&w=300&q=80', rating: '4.9', reviews: '87', subcat: 'cardiologo' },
+    { name: 'Dr. Andrés Ramírez', specialty: 'Pediatra', location: 'Medellín - Colombia', phone: '310 5567890', avatar: 'https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?auto=format&fit=crop&w=300&q=80', rating: '4.7', reviews: '45', subcat: 'pediatra' },
+    { name: 'Dra. Laura Martínez', specialty: 'Neurólogo', location: 'Cali - Colombia', phone: '318 7728456', avatar: 'https://images.unsplash.com/photo-1527613426441-4da17471b66d?auto=format&fit=crop&w=300&q=80', rating: '4.9', reviews: '62', subcat: 'neurologo' },
+    { name: 'Dr. Julio Pérez', specialty: 'Ortopedista', location: 'Barranquilla - Colombia', phone: '312 9911234', avatar: 'https://images.unsplash.com/photo-1537368910025-700350fe46c7?auto=format&fit=crop&w=300&q=80', rating: '4.6', reviews: '33', subcat: 'ortopedista' },
+    { name: 'Dra. Sofía Herrera', specialty: 'Dermatólogo', location: 'Pereira - Colombia', phone: '317 4455678', avatar: 'https://images.unsplash.com/photo-1651008376811-b90baee60c1f?auto=format&fit=crop&w=300&q=80', rating: '4.8', reviews: '51', subcat: 'dermatologo' }
+  ],
+  restaurantes: [
+    { name: 'Maido', location: 'Miraflores - Peru', rating: '4.98', reviews: '1.260', image: 'https://images.unsplash.com/photo-1550966871-3ed3cdb5ed0c?auto=format&fit=crop&w=600&q=80', detail: 'A 18 km de distancia', hours: 'ABRE EN 1 HORA', subcat: 'peruana', type: 'image-card' },
+    { name: 'Osteria Francescana', location: 'Módena - Italia', rating: '4.95', reviews: '2.180', image: 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=600&q=80', detail: 'A 5 km de distancia', hours: 'ABIERTO', subcat: 'italiana', type: 'image-card' },
+    { name: 'Narisawa', location: 'Tokio - Japón', rating: '4.92', reviews: '890', image: 'https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=600&q=80', detail: 'A 32 km de distancia', hours: 'ABRE EN 3 HORAS', subcat: 'oriental', type: 'image-card' },
+    { name: 'Andrés Carne de Res', location: 'Chía - Colombia', rating: '4.85', reviews: '3.400', image: 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=600&q=80', detail: 'A 25 km de distancia', hours: 'ABIERTO', subcat: 'colombiana', type: 'image-card' },
+    { name: 'Pujol', location: 'CDMX - México', rating: '4.90', reviews: '1.800', image: 'https://images.unsplash.com/photo-1559339352-11d035aa65de?auto=format&fit=crop&w=600&q=80', detail: 'A 12 km de distancia', hours: 'ABIERTO', subcat: 'mexicana', type: 'image-card' }
+  ],
+  hospedajes: [
+    { name: 'Ellerman House', location: 'Cape Town - Sudáfrica', rating: '4.98', reviews: '1.260', image: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=600&q=80', detail: 'Luminosa y con luz natural, esta acogedora...', rooms: '1 Habitación - 1 Cama', price: '$850.000 COP/Noche', subcat: 'hotel', type: 'image-card' },
+    { name: 'Villa del Lago', location: 'Guatapé - Colombia', rating: '4.85', reviews: '320', image: 'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=600&q=80', detail: 'Espectacular vista al embalse...', rooms: '3 Habitaciones - 2 Baños', price: '$450.000 COP/Noche', subcat: 'casa', type: 'image-card' },
+    { name: 'Sky Loft Poblado', location: 'Medellín - Colombia', rating: '4.90', reviews: '180', image: 'https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=600&q=80', detail: 'Moderno apartamento con vistas panorámicas...', rooms: '2 Habitaciones - 1 Cama King', price: '$380.000 COP/Noche', subcat: 'apartamento', type: 'image-card' },
+    { name: 'Cabaña Bosque de Niebla', location: 'Salento - Colombia', rating: '4.92', reviews: '95', image: 'https://images.unsplash.com/photo-1449158743715-0a90ebb6d2d8?auto=format&fit=crop&w=600&q=80', detail: 'Refugio en medio del bosque cafetero...', rooms: '1 Habitación - Chimenea', price: '$320.000 COP/Noche', subcat: 'cabana', type: 'image-card' },
+    { name: 'Villa Amanecer', location: 'Cartagena - Colombia', rating: '4.95', reviews: '210', image: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=600&q=80', detail: 'Villa frente al mar con piscina privada...', rooms: '4 Habitaciones - 5 Baños', price: '$1.200.000 COP/Noche', subcat: 'villa', type: 'image-card' }
+  ],
+  belleza: [
+    { name: 'Studio Glamour', specialty: 'Peluquería & Estilismo', location: 'Bogotá - Colombia', phone: '315 2209876', avatar: 'https://images.unsplash.com/photo-1560066984-138dadb4c035?auto=format&fit=crop&w=300&q=80', rating: '4.8', reviews: '120', subcat: 'peluqueria' },
+    { name: 'Zen Spa Premium', specialty: 'Spa & Wellness', location: 'Medellín - Colombia', phone: '310 4456789', avatar: 'https://images.unsplash.com/photo-1544161515-4ab6ce6db874?auto=format&fit=crop&w=300&q=80', rating: '4.9', reviews: '85', subcat: 'spa' },
+    { name: 'Nails Art Studio', specialty: 'Uñas & Nail Art', location: 'Cali - Colombia', phone: '318 3345678', avatar: 'https://images.unsplash.com/photo-1604654894610-df63bc536371?auto=format&fit=crop&w=300&q=80', rating: '4.7', reviews: '67', subcat: 'unas' },
+    { name: 'Barber Kings', specialty: 'Barbería Premium', location: 'Manizales - Colombia', phone: '312 8876543', avatar: 'https://images.unsplash.com/photo-1503951914875-452f35780e85?auto=format&fit=crop&w=300&q=80', rating: '4.9', reviews: '142', subcat: 'barberia' }
+  ],
+  odontologos: [
+    { name: 'Dra. Andrea Ruiz', specialty: 'Ortodoncia', location: 'Bogotá - Colombia', phone: '315 7789012', avatar: 'https://images.unsplash.com/photo-1588776814546-1ffcf47267a5?auto=format&fit=crop&w=300&q=80', rating: '4.9', reviews: '78', subcat: 'ortodoncia' },
+    { name: 'Dr. Felipe Torres', specialty: 'Estética Dental', location: 'Medellín - Colombia', phone: '310 2234567', avatar: 'https://images.unsplash.com/photo-1606811971618-4486d14f3f99?auto=format&fit=crop&w=300&q=80', rating: '4.8', reviews: '56', subcat: 'estetica' },
+    { name: 'Dra. María Salazar', specialty: 'Endodoncia', location: 'Cali - Colombia', phone: '318 9912345', avatar: 'https://images.unsplash.com/photo-1629909613654-28e377c37b09?auto=format&fit=crop&w=300&q=80', rating: '4.7', reviews: '42', subcat: 'endodoncia' }
+  ],
+  eventos: [
+    { name: 'Usyk vs Dubois II', location: 'Wembley - Londres', rating: '5.0', reviews: '1.2k', image: 'https://images.unsplash.com/photo-1517649763962-0c623266010b?auto=format&fit=crop&w=600&q=80', detail: 'Campeonato Mundial Pesos Pesados', hours: 'Sáb 25 Sep - 7:00 PM', price: 'Desde $180 USD', subcat: 'deportes', type: 'image-card' },
+    { name: 'Coldplay World Tour', location: 'Estadio Olímpico', rating: '5.0', reviews: '3.4k', image: 'https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?auto=format&fit=crop&w=600&q=80', detail: 'Music of the Spheres', hours: 'Dom 10 Oct - 6:00 PM', price: 'Desde $140 USD', subcat: 'conciertos', type: 'image-card' },
+    { name: 'Cirque du Soleil: KÀ', location: 'MGM Grand - Las Vegas', rating: '4.9', reviews: '890', image: 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?auto=format&fit=crop&w=600&q=80', detail: 'Show acrobático inmersivo', hours: 'Todos los viernes 8PM', price: 'Desde $110 USD', subcat: 'teatro', type: 'image-card' }
+  ],
+  inmobiliaria: [
+    { name: 'The Reserve Pent-houses', location: 'Distrito Financiero VIP', rating: '4.95', reviews: '85', image: 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=600&q=80', detail: 'Torres residenciales con helipuerto', rooms: 'Desde 120 m² - 3 Alcobas', price: 'Desde $450,000 USD', subcat: 'apartamentos', type: 'image-card' },
+    { name: 'Ocean Sky Towers', location: 'Cartagena de Indias', rating: '4.9', reviews: '62', image: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=600&q=80', detail: 'Marina privada y muelle para yates', rooms: 'Desde 95 m² - 2 Alcobas', price: 'Desde $320,000 USD', subcat: 'apartamentos', type: 'image-card' },
+    { name: 'Horizon Eco Villas', location: 'Valle del Bravo', rating: '5.0', reviews: '40', image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=600&q=80', detail: 'Paneles solares y huertos orgánicos', rooms: 'Desde 250 m² - Lote 1000 m²', price: 'Desde $680,000 USD', subcat: 'casas', type: 'image-card' }
+  ]
+};
+
+let currentProviderCategory = '';
+let currentSubcategoryFilter = 'all';
+
+function openCategorySearch() {
+  const overlay = document.getElementById('categorySearchOverlay');
+  const panel = document.getElementById('categorySearchPanel');
+  const grid = document.getElementById('catSearchGrid');
+  
+  grid.innerHTML = CATEGORIES.map(cat => `
+    <div class="cat-search-item" onclick="closeCategorySearch(); showCategoryProviders('${cat.id}')">
+      <div class="cat-search-emoji ${cat.colorClass}">${cat.icon}</div>
+      <span class="cat-search-item-label">${cat.name}</span>
+    </div>
+  `).join('');
+
+  overlay.classList.add('active');
+  panel.classList.add('active');
+  
+  setTimeout(() => {
+    document.getElementById('catSearchInput').focus();
+  }, 350);
+}
+
+function closeCategorySearch() {
+  document.getElementById('categorySearchOverlay').classList.remove('active');
+  document.getElementById('categorySearchPanel').classList.remove('active');
+  document.getElementById('catSearchInput').value = '';
+}
+
+function filterCategorySearch(query) {
+  const grid = document.getElementById('catSearchGrid');
+  const filtered = CATEGORIES.filter(cat =>
+    cat.name.toLowerCase().includes(query.toLowerCase())
+  );
+  grid.innerHTML = filtered.map(cat => `
+    <div class="cat-search-item" onclick="closeCategorySearch(); showCategoryProviders('${cat.id}')">
+      <div class="cat-search-emoji ${cat.colorClass}">${cat.icon}</div>
+      <span class="cat-search-item-label">${cat.name}</span>
+    </div>
+  `).join('');
+}
+
+function showCategoryProviders(categoryId) {
+  currentProviderCategory = categoryId;
+  currentSubcategoryFilter = 'all';
+  
+  if (categoryId !== 'all') {
+    const category = CATEGORIES.find(c => c.id === categoryId);
+    if (!category) return;
+  }
+
+  // Update search placeholder based on category
+  const nameSearch = document.getElementById('providersNameSearch');
+  const placeholders = {
+    medicos: 'Busca por Nombre y/o Apellido',
+    restaurantes: 'Busca por nombre del Restaurante',
+    hospedajes: 'Ingresa un destino',
+    belleza: 'Busca por Nombre del Salón',
+    odontologos: 'Busca por Nombre y/o Apellido',
+    eventos: 'Busca un evento',
+    inmobiliaria: 'Busca un proyecto'
+  };
+  nameSearch.placeholder = placeholders[categoryId] || 'Busca en todos los servicios...';
+  nameSearch.value = '';
+
+  renderSubcategories(categoryId);
+  renderProvidersList(categoryId, 'all');
+
+  document.getElementById('providersViewOverlay').classList.add('active');
+}
+
+function closeProvidersView() {
+  document.getElementById('providersViewOverlay').classList.remove('active');
+}
+
+function renderSubcategories(categoryId) {
+  const container = document.getElementById('providersSubcategories');
+  const subcats = categoryId === 'all'
+    ? CATEGORIES.map(c => ({ id: c.id, name: c.name, icon: c.icon }))
+    : (SUBCATEGORIES[categoryId] || []);
+
+  const isTodosActive = currentSubcategoryFilter === 'all';
+  let html = `
+    <div class="subcat-item ${isTodosActive ? 'active' : ''}" onclick="filterBySubcategory('all')">
+      <div class="subcat-icon" style="background:var(--bg-surface);border-color:${isTodosActive ? 'var(--text-main)' : 'var(--border-color)'}">
+        🗂️
+      </div>
+      <span class="subcat-label">Todos</span>
+    </div>
+  `;
+
+  html += subcats.map(sub => `
+    <div class="subcat-item ${currentSubcategoryFilter === sub.id ? 'active' : ''}" onclick="filterBySubcategory('${sub.id}')">
+      <div class="subcat-icon" style="background:var(--bg-surface);border-color:${currentSubcategoryFilter === sub.id ? 'var(--text-main)' : 'var(--border-color)'}">
+        ${sub.icon}
+      </div>
+      <span class="subcat-label">${sub.name}</span>
+    </div>
+  `).join('');
+
+  container.innerHTML = html;
+}
+
+function filterBySubcategory(subcatId) {
+  if (subcatId === 'all') {
+    currentSubcategoryFilter = 'all';
+  } else {
+    currentSubcategoryFilter = currentSubcategoryFilter === subcatId ? 'all' : subcatId;
+  }
+  renderSubcategories(currentProviderCategory);
+  renderProvidersList(currentProviderCategory, currentSubcategoryFilter);
+}
+
+function filterProvidersByName(query) {
+  renderProvidersList(currentProviderCategory, currentSubcategoryFilter, query);
+}
+
+function renderProvidersList(categoryId, subcatFilter, nameQuery = '') {
+  const container = document.getElementById('providersList');
+  let providers = [];
+
+  if (categoryId === 'all') {
+    Object.keys(PROVIDERS_DATA).forEach(cat => {
+      if (subcatFilter === 'all' || subcatFilter === cat) {
+        const tagged = PROVIDERS_DATA[cat].map(p => ({ ...p, categoryId: cat }));
+        providers = providers.concat(tagged);
+      }
+    });
+  } else {
+    providers = (PROVIDERS_DATA[categoryId] || []).map(p => ({ ...p, categoryId }));
+    if (subcatFilter && subcatFilter !== 'all') {
+      providers = providers.filter(p => p.subcat === subcatFilter);
+    }
+  }
+
+  if (nameQuery.trim().length > 0) {
+    const q = nameQuery.toLowerCase();
+    providers = providers.filter(p => 
+      p.name.toLowerCase().includes(q) ||
+      (p.specialty && p.specialty.toLowerCase().includes(q)) ||
+      p.location.toLowerCase().includes(q)
+    );
+  }
+
+  if (providers.length === 0) {
+    container.innerHTML = `<div style="padding:40px 20px;text-align:center;color:var(--text-muted);">
+      <p style="font-size:32px;margin-bottom:8px;">🔍</p>
+      <p style="font-weight:600;">No se encontraron resultados</p>
+      <p style="font-size:13px;">Intenta con otro término de búsqueda</p>
+    </div>`;
+    return;
+  }
+
+  container.innerHTML = providers.map(provider => {
+    if (provider.type === 'image-card') {
+      return renderImageProviderCard(provider, provider.categoryId);
+    } else {
+      return renderAvatarProviderCard(provider, provider.categoryId);
+    }
+  }).join('');
+}
+
+function openProviderModal(categoryId, providerName) {
+  let provider = null;
+  let actualCategory = categoryId;
+
+  if (!categoryId || categoryId === 'all') {
+    for (const cat in PROVIDERS_DATA) {
+      provider = PROVIDERS_DATA[cat].find(p => p.name === providerName);
+      if (provider) {
+        actualCategory = cat;
+        break;
+      }
+    }
+  } else {
+    provider = (PROVIDERS_DATA[categoryId] || []).find(p => p.name === providerName);
+  }
+
+  if (!provider) return;
+
+  const item = {
+    id: provider.name,
+    title: provider.name,
+    subtitle: provider.specialty || provider.location,
+    location: provider.location,
+    category: actualCategory,
+    rating: provider.rating ? `${provider.rating} ★ (${provider.reviews || '0'})` : '4.9 ★',
+    price: provider.price || 'N/A',
+    description: provider.detail || provider.hours || provider.rooms || `Servicio profesional de la categoría ${actualCategory.toUpperCase()} destacado en la plataforma Aggenda.`,
+    image: provider.image || provider.avatar || 'https://images.unsplash.com/photo-1622253692010-333f2da6031d?auto=format&fit=crop&w=600&q=80'
+  };
+  openModal(item);
+}
+
+function renderAvatarProviderCard(p, categoryId) {
+  const cat = categoryId || p.categoryId || 'all';
+  return `
+    <div class="provider-card">
+      <div class="provider-card-body">
+        <div class="provider-card-top">
+          <img src="${p.avatar}" alt="${p.name}" class="provider-avatar">
+          <div class="provider-info">
+            <h3 class="provider-name">${p.name}</h3>
+            <p class="provider-specialty">${p.specialty}</p>
+            <p class="provider-location">${p.location}</p>
+            <p class="provider-phone">${p.phone}</p>
+            <button class="provider-see-more" onclick="openProviderModal('${cat}', '${p.name.replace(/'/g, "\\'")}')">
+              Ver Más
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="provider-card-footer">
+        <div class="provider-rating">
+          <span class="star">★</span> ${p.rating} (${p.reviews})
+        </div>
+        <div class="provider-footer-actions">
+          <button class="provider-icon-btn" onclick="showToast('Videollamada con ${p.name.replace(/'/g, '')}')">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="23 7 16 12 23 17 23 7"></polygon><rect x="1" y="5" width="15" height="14" rx="2" ry="2"></rect></svg>
+          </button>
+          <button class="provider-icon-btn" onclick="showToast('Guardado en favoritos')">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+          </button>
+          <button class="provider-book-btn" onclick="showToast('🎉 Agendando con ${p.name.replace(/'/g, '')}...')">
+            AGENDAR
+          </button>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function renderImageProviderCard(p, categoryId) {
+  const cat = categoryId || p.categoryId || 'all';
+  return `
+    <div class="provider-card image-card">
+      <img src="${p.image}" alt="${p.name}" class="provider-card-image">
+      <div class="provider-card-body">
+        <div class="provider-card-info-row">
+          <h3 class="provider-card-title">${p.name}</h3>
+          <div class="provider-card-rating">
+            <span class="star">★</span> ${p.rating} (${p.reviews})
+            <button class="provider-icon-btn" style="margin-left:4px;" onclick="event.stopPropagation(); showToast('Guardado en favoritos')">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+            </button>
+          </div>
+        </div>
+        <p class="provider-card-location-text">${p.location}</p>
+        ${p.detail ? `<p class="provider-card-detail">${p.detail}</p>` : ''}
+        ${p.hours ? `<p class="provider-card-detail">${p.hours}</p>` : ''}
+        ${p.rooms ? `<p class="provider-card-detail">${p.rooms}</p>` : ''}
+        ${p.price ? `<p class="provider-card-price">${p.price}</p>` : ''}
+        <div class="provider-card-footer-row">
+          <button class="provider-see-more" style="background:var(--border-color); color:var(--text-main); margin-top:0;" onclick="openProviderModal('${cat}', '${p.name.replace(/'/g, "\\'")}')">
+            Ver Más
+          </button>
+          <button class="provider-card-reserve-btn" onclick="showToast('🎉 Reservando en ${p.name.replace(/'/g, '')}...')">
+            RESERVAR
+          </button>
+        </div>
+      </div>
+    </div>
+  `;
 }
 
 // --- THEME TOGGLE & UTILS ---
